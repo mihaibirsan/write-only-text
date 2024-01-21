@@ -11,10 +11,12 @@ Originally developed at [Write Only Text (codepen.io)](https://codepen.io/mihaib
 + Typing only appends to the end of the string. 
 + There is no editing, with one exception: backspace is permitted.
 + Text is saved to localStorage, for convenience.
+
+Basic UX
++ Confirmation dialog when clearing text.
 + There's a [mauve theme](https://mihaibirsan.github.io/write-only-text/?theme=mauve) (Want [more](https://github.com/mihaibirsan/write-only-text/issues/1)?)
 
 ## TODO
-+ Add friction when the "Clear" button is clicked.
 + Make it work on mobile.
 + Bring in a simple UI library.
 + Store multiple files on localStorage.
