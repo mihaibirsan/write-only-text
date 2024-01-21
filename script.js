@@ -1,15 +1,3 @@
-/**
- * Features:
- * * Typing only appends to the end of the string. 
- * * There is no editing, with one exception: backspace is permitted.
- * * Text is saved to localStorage, for convenience.
- *
- * TODO:
- * * Add friction when the "Clear" button is clicked.
- * * Keep a timer.
- * * Publish this and similar tools to Github (either Gist or Pages).
- */
-
 (function () {
   const params = new URLSearchParams(location.search);
   document.documentElement.className = params.get('theme');
