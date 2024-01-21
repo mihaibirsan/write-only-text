@@ -18,9 +18,12 @@ Basic UX
 
 ## TODO
 + Make it work on mobile.
-+ Bring in a simple UI library.
++ Bring in a simple UI library. (Considering https://ui.shadcn.com/)
++ Structure the app with Commands (Ctrl+K or Ctrl+P or something)
++ Display UI notification when errors occur
 + Store multiple files on localStorage.
 + Keep a timer.
++ Track words per minute. Word-by-word and "Clear" undo.
 + Enable storage against a local folder.
 + Enable storage against a remote folder. (e.g. GitHub, Dropbox, etc.)
 
