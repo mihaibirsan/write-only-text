@@ -10,8 +10,10 @@ Originally developed at [Write Only Text (codepen.io)](https://codepen.io/mihaib
 + There is no editing, with one exception: backspace is permitted.
 + Text is saved to localStorage, for convenience.
 
+Basic UX
++ Confirmation dialog when clearing text.
+
 ## TODO
-+ Add friction when the "Clear" button is clicked.
 + Keep a timer.
 
 ## Running locally

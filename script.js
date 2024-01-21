@@ -80,6 +80,10 @@
   const clearButtonEl =   document.querySelector('button#clear');
   clearButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
+      if (!window.confirm('Are you sure you want to clear the text?')) {
+        return;
+      }
+
       totalString = '';
       cursorEl.value = totalString;
       startTime = null;
