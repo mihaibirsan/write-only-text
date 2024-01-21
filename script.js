@@ -1,11 +1,17 @@
 (function () {
   const params = new URLSearchParams(location.search);
   document.documentElement.className = params.get('theme');
+  const enclosureEl = document.getElementById('enclosure');
   const textEl = document.getElementById('text');
+  const cursorEl = document.getElementById('cursor');
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const clearingEl = document.getElementById('clearing');
-  
+
+  document.addEventListener('click', function() {
+    cursorEl.focus();
+  });
+
   let totalString = window.localStorage.getItem('text') || '';
   textEl.innerText = totalString;
   
@@ -19,28 +25,19 @@
     textEl.innerText = totalString;
     window.localStorage.setItem('text', totalString);
     event?.preventDefault();
-    clearingEl.scrollIntoView({ behavior: 'smooth' });
+    clearingEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
     
     timeEl.innerText = `${startTime} - ${endTime}`;
     wordCountEl.innerText = `• ${wordCount()} words`;
   }
   commit()
   
-  function keypressListener(event) {
+  function keyupListener(event) {
     let processed = false;
     if (event.key === 'Enter') {
       totalString = totalString + '\n';
       processed = true;
-    } else if (event.key) {
-      totalString = totalString + event.key;
-      processed = true;
-    }
-    processed && commit(event);
-  }
-  
-  function keydownListener(event) {
-    let processed = false;
-    if (event.key === 'Backspace') {
+    } else if (event.key === 'Backspace') {
       let deleteLength = 1;
       if (event.ctrlKey) {
         const match = totalString.match(/\b\w+\s*$/);
@@ -49,6 +46,10 @@
         }
       }
       totalString = totalString.substr(0, totalString.length - deleteLength);
+      processed = true;
+    } else if (cursorEl.innerText.match(/\s$/)) {
+      totalString = totalString + cursorEl.innerText;
+      cursorEl.innerText = '';
       processed = true;
     }
     processed && commit(event);
@@ -60,8 +61,7 @@
     window.localStorage.setItem('endTime', endTime);
   }
   
-  document.addEventListener('keypress', keypressListener);
-  document.addEventListener('keydown', keydownListener);
+  cursorEl.addEventListener('keyup', keyupListener);
 
   const copyButtonEl = document.querySelector('button#copy');
   copyButtonEl

@@ -8,6 +8,7 @@ Start or continue your session here: https://mihaibirsan.github.io/write-only-te
 Originally developed at [Write Only Text (codepen.io)](https://codepen.io/mihaibirsan/full/rNWdoJj)
 
 ## Features
++ Works on desktop and mobile. _(Add as app!)_
 + Typing only appends to the end of the string. 
 + There is no editing, with one exception: backspace is permitted.
 + Text is saved to localStorage, for convenience.
@@ -17,7 +18,6 @@ Basic UX
 + There's a [mauve theme](https://mihaibirsan.github.io/write-only-text/?theme=mauve) (Want [more](https://github.com/mihaibirsan/write-only-text/issues/1)?)
 
 ## TODO
-+ Make it work on mobile.
 + Bring in a simple UI library. (Considering https://ui.shadcn.com/)
 + Structure the app with Commands (Ctrl+K or Ctrl+P or something)
 + Display UI notification when errors occur
@@ -32,3 +32,5 @@ Basic UX
 ```sh
 npx http-server
 ```
+
+Ebenen Monaco has issues when typing on I. 
