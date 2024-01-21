@@ -84,18 +84,12 @@
     });
 })();
 
-function copy(text) {
-  const fake = document.body.appendChild(document.createElement("textarea"));
-  fake.style.position = "absolute";
-  fake.style.left = "-9999px";
-  fake.setAttribute("readonly", "");
-  fake.value = "" + text;
-  fake.select();
+async function copy(text) {
   try {
-    return document.execCommand("copy");
+    await navigator.clipboard.writeText(String(text));
+    return true;
   } catch (err) {
+    console.error('Failed to copy text: ', err);
     return false;
-  } finally {
-    fake.parentNode.removeChild(fake);
   }
 }
