@@ -19,3 +19,15 @@ Originally developed at [Write Only Text (codepen.io)](https://codepen.io/mihaib
 ```sh
 npx http-server
 ```
+
+## Development
+
+Use live reload during development.
+
+NOTE: Useful when developing for mobile!
+
+```sh
+npx browser-sync start --server --files "*.*"
+```
+
+And perhaps try [Remote debug Android devices - Chrome for Developers](https://developer.chrome.com/docs/devtools/remote-debugging/)!
