@@ -12,7 +12,7 @@ html, body {
 }
 
 #enclosure {
-  width: 40em;
+  max-width: 40em;
   margin: 0 auto;
   padding: 20vh 0;
 }
@@ -23,15 +23,17 @@ html, body {
   padding: .5em;
 }
 
+textarea#cursor {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  resize: none;
+}
+
 #text:after {
   position: absolute;
   content: "█"; /* https://www.fileformat.info/info/unicode/char/2588/index.htm */
   opacity: 0.1; /* TODO: animate-to 0.05 at the pace of a breath */
-}
-
-#clearing {
-  content: "";
-  display: block;
 }
 
 #toolbar {
@@ -40,7 +42,7 @@ html, body {
   flex-direction: column;
   justify-content: flex-end;
   box-sizing: border-box;
-  width: 40em;
+  max-width: 40em;
   height: 20vh;
   margin: 0 auto;
   padding: 1em 0;
