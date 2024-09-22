@@ -71,6 +71,7 @@
   clearButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
       totalString = '';
+      cursorEl.value = totalString;
       startTime = null;
       window.localStorage.removeItem('startTime');
       endTime = null;
