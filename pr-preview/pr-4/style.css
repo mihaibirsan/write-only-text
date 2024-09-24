@@ -4,10 +4,10 @@ html, body {
   margin: 0; height: 100vh;
   background: #2F3437;
   color: #EBEBEB;
+  font: 14px Consolas, monospace;
 }
 
 #enclosure, #time, #wordcount {
-  font: 14px Consolas, monospace;
   white-space: pre-wrap;
 }
 
@@ -48,6 +48,24 @@ textarea#cursor {
   padding: 1em 0;
   background: linear-gradient(
 0deg, #2F3437, rgba(0x2F, 0x34, 0x37, .8), transparent);
+}
+
+#badge {
+  position: fixed; top: 0; left: 50%;
+  background: #EBEBEB33;
+  font-size: 12px;
+  border-radius: 0 0 .5em .5em;
+}
+#badge .key,
+#badge .value {
+  display: inline-block;
+  padding: 0 .5em .2em;
+}
+#badge .key {
+  background: #2F343766;
+}
+#badge .value a {
+  color: rgb(83, 155, 245);
 }
 
 /* Theme: Mauve */
