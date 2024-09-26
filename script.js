@@ -4,10 +4,11 @@
   const textEl = document.getElementById('text');
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
-  const clearingEl = document.getElementById('clearing');
+  const cursorEl = document.getElementById('cursor');
   
   let totalString = window.localStorage.getItem('text') || '';
   textEl.innerText = totalString;
+  cursorEl.value = totalString;
   
   let startTime = window.localStorage.getItem('startTime') || null;
   let endTime = window.localStorage.getItem('endTime') || null;
@@ -19,49 +20,44 @@
     textEl.innerText = totalString;
     window.localStorage.setItem('text', totalString);
     event?.preventDefault();
-    clearingEl.scrollIntoView({ behavior: 'smooth' });
+    cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
     timeEl.innerText = `${startTime} - ${endTime}`;
     wordCountEl.innerText = `• ${wordCount()} words`;
   }
   commit()
   
-  function keypressListener(event) {
-    let processed = false;
-    if (event.key === 'Enter') {
-      totalString = totalString + '\n';
-      processed = true;
-    } else if (event.key) {
-      totalString = totalString + event.key;
-      processed = true;
-    }
-    processed && commit(event);
-  }
-  
   function keydownListener(event) {
-    let processed = false;
-    if (event.key === 'Backspace') {
-      let deleteLength = 1;
-      if (event.ctrlKey) {
-        const match = totalString.match(/\b\w+\s*$/);
-        if (match) {
-          deleteLength = match[0].length;
-        }
-      }
-      totalString = totalString.substr(0, totalString.length - deleteLength);
-      processed = true;
-    }
-    processed && commit(event);
     if (startTime === null) {
       startTime = currentTimeString();
       window.localStorage.setItem('startTime', startTime);
     }
     endTime = currentTimeString();
     window.localStorage.setItem('endTime', endTime);
+
+    // Make sure there's input from keyboard.
+    if (document.activeElement !== cursorEl) {
+      cursorEl.focus();
+    }
   }
   
-  document.addEventListener('keypress', keypressListener);
   document.addEventListener('keydown', keydownListener);
+
+  // Bring up the keyboard on mobile.
+  document.addEventListener('click', () => {
+    cursorEl.focus();
+  });
+
+  // Update the text when the user types.
+  cursorEl.addEventListener('input', (event) => {
+    totalString = cursorEl.value;
+    commit(event);
+  });
+
+  // Keep the cursor at the end of the text.
+  cursorEl.addEventListener('selectionchange', (event) => {
+    cursorEl.setSelectionRange(cursorEl.value.length, cursorEl.value.length);
+  });
 
   const copyButtonEl = document.querySelector('button#copy');
   copyButtonEl
@@ -75,6 +71,7 @@
   clearButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
       totalString = '';
+      cursorEl.value = totalString;
       startTime = null;
       window.localStorage.removeItem('startTime');
       endTime = null;
