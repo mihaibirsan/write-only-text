@@ -116,7 +116,10 @@
   copyButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
       const copyTime = currentTimeString();
-      copy(`${smoosh(stringData)}\n\nStarted at:: ${startTime}\nFinished at:: ${endTime}\nCopied at:: ${copyTime}\nWord count:: ${wordCount()}`);
+      const stats = `\n\nStarted at:: ${startTime}\nFinished at:: ${endTime}\nCopied at:: ${copyTime}\nWord count:: ${wordCount()}`;
+      const textPart = smoosh(stringData) + stats;
+      const htmlPart = (presentHTML(stringData) + stats).replaceAll('\n', '<br>');
+      copy(textPart, htmlPart);
       copyButtonEl.blur();
     });
   
@@ -134,18 +137,15 @@
     });
 })();
 
-function copy(text) {
-  const fake = document.body.appendChild(document.createElement("textarea"));
-  fake.style.position = "absolute";
-  fake.style.left = "-9999px";
-  fake.setAttribute("readonly", "");
-  fake.value = "" + text;
-  fake.select();
-  try {
-    return document.execCommand("copy");
-  } catch (err) {
-    return false;
-  } finally {
-    fake.parentNode.removeChild(fake);
-  }
+function copy(textPart, htmlPart) {
+  const clipboardItem = new ClipboardItem({
+    'text/plain': new Blob([textPart], { type: 'text/plain' }),
+    'text/html': new Blob([htmlPart], { type: 'text/html' })
+  });
+
+  navigator.clipboard.write([clipboardItem]).then(() => {
+    console.log('Text and HTML copied to clipboard');
+  }).catch((err) => {
+    console.error('Error copying to clipboard', err);
+  });
 }
