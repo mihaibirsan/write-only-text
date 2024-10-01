@@ -20,6 +20,9 @@
   }
   
   function del(stringData, length) {
+    if (length === 0) {
+      return;
+    }
     // prepare a del item
     let delItem = { type: 'del', value: '' };
     let i = stringData.length - 1;
@@ -43,6 +46,25 @@
       }
     }
     stringData.push(delItem);
+  }
+
+  // Binary search for the lowest common string.
+  function lowestCommonString(left, right) {
+    let high = Math.min(left.length, right.length);
+    if (left.slice(0, high) === right.slice(0, high)) {
+      return left.slice(0, high);
+    }
+    let low = 0;
+    while (low < high) {
+      const mid = Math.floor((low + high) / 2);
+      if (left.slice(0, mid) === right.slice(0, mid)) {
+        if (low === mid) break;
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+    return left.slice(0, low);
   }
   
   function presentHTML(stringData) {
@@ -98,11 +120,14 @@
   cursorEl.addEventListener('input', (event) => {
     const previousString = smoosh(stringData);
     const nextString = cursorEl.value;
-    // When text has been deleted, the last element becomes a del item.
-    if (previousString.length > nextString.length) {
+    const commonString = lowestCommonString(previousString, nextString);
+    if (commonString === nextString) {
       del(stringData, previousString.length - nextString.length);
-    } else if (previousString.length < nextString.length) {
+    } else if (commonString === previousString) {
       add(stringData, nextString.slice(previousString.length));
+    } else {
+      del(stringData, previousString.length - commonString.length);
+      add(stringData, nextString.slice(commonString.length));
     }
     commit(event);
   });
