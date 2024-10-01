@@ -22,6 +22,9 @@ html, body {
   box-sizing: border-box;
   padding: .5em;
 }
+#text del {
+  opacity: .2;
+}
 
 textarea#cursor {
   opacity: 0;
