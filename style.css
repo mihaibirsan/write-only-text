@@ -11,6 +11,10 @@ html, body {
   white-space: pre-wrap;
 }
 
+#time > span:nth-child(odd) {
+  opacity: 0.5;
+}
+
 #enclosure {
   max-width: 40em;
   margin: 0 auto;
