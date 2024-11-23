@@ -14,6 +14,16 @@ Originally developed at [Write Only Text (codepen.io)](https://codepen.io/mihaib
 + Add friction when the "Clear" button is clicked.
 + Keep a timer.
 
+## Sounds
+
+Intended to make this a more cinematic experience, so that I can record a YouTube video with a "performance of writing". When typing especially fast, the sounds aren't appealing at all, most likely having to do with the order in which they are played.
+
+There's more work to be done for this, shelving it.
+
+Sounds used: [typewriter by yottasounds - Freesound](https://freesound.org/people/yottasounds/packs/21359/)
+
+Target experience: [typewriter22.ogg](https://freesound.org/people/tams_kp/sounds/43560/) manual typewriter some end returns
+
 ## Running locally
 
 ```sh

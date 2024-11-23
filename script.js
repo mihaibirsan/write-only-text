@@ -5,6 +5,12 @@
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
+
+  const typewriterSounds = Array.from({ length: 9 }, (_, i) => new Audio(`key${(i%3)+1}.wav`));
+  const playAndCycleTypewriterSound = () => {
+    typewriterSounds.unshift(typewriterSounds.pop());
+    typewriterSounds[0].play();
+  };
   
   let totalString = window.localStorage.getItem('text') || '';
   textEl.innerText = totalString;
@@ -57,7 +63,8 @@
   // Update the text when the user types.
   cursorEl.addEventListener('input', (event) => {
     totalString = cursorEl.value;
-    commit(event);
+    playAndCycleTypewriterSound();
+    setTimeout(() => commit(event), 20);
   });
 
   // Keep the cursor at the end of the text.
