@@ -14,7 +14,7 @@
   let endTime = window.localStorage.getItem('endTime') || null;
   
   const currentTimeString = () => luxon.DateTime.now().set({ seconds: 0, milliseconds: 0 }).toISO({ suppressSeconds: true })
-  const wordCount = () => (totalString.match(/\w+/g) || []).length
+  const wordCount = () => (totalString.match(/\p{L}+/gu) || []).length
   
   function commit(event) {
     textEl.innerText = totalString;
