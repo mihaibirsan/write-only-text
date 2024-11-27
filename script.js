@@ -6,7 +6,7 @@
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
 
-  const typewriterSounds = Array.from({ length: 9 }, (_, i) => new Audio(`key${(i%3)+1}.wav`));
+  const typewriterSounds = Array.from({ length: 9 }, (_, i) => new Howl({ src: [`key${(i%3)+1}.wav`]}));
   const playAndCycleTypewriterSound = () => {
     typewriterSounds.unshift(typewriterSounds.pop());
     typewriterSounds[0].play();
