@@ -10,20 +10,30 @@
   const MID_SIDE_KEYBOARD = `tyughjbnm567%^& `;
   const RIGHT_SIDE_KEYBOARD = `iop[]kl;',./890-=*()_+{}|:"<>?\\`;
 
-  const typewriterSounds = Array.from({ length: 3 }, (_, i) => new Howl({ src: [`key${(i%3)+1}.wav`]}));
+  const typewriterSounds = new Howl({
+    src: ['43560__tams_kp__typewriter22.mp3'],
+    sprite: {
+      dingAndReturn: [(60+51)*1000, 1000],
+      return: [50*1000, 1000],
+    }
+  })
+  const keySounds = Array.from({ length: 3 }, (_, i) => new Howl({ src: [`key${(i%3)+1}.wav`]}));
   const playAndCycleTypewriterSound = (lastKey) => {
     if (lastKey === null || lastKey === '') {
       return;
     }
     lastKey = lastKey.toLowerCase();
     if (LEFT_SIDE_KEYBOARD.includes(lastKey)) {
-      typewriterSounds[0].play();
+      keySounds[0].play();
     }
     if (MID_SIDE_KEYBOARD.includes(lastKey)) {
-      typewriterSounds[1].play();
+      keySounds[1].play();
     }
     if (RIGHT_SIDE_KEYBOARD.includes(lastKey)) {
-      typewriterSounds[2].play();
+      keySounds[2].play();
+    }
+    if ("\r\n".includes(lastKey)) {
+      typewriterSounds.play('dingAndReturn');
     }
   };
   

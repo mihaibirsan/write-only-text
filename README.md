@@ -24,6 +24,12 @@ Sounds used: [typewriter by yottasounds - Freesound](https://freesound.org/peopl
 
 Target experience: [typewriter22.ogg](https://freesound.org/people/tams_kp/sounds/43560/) manual typewriter some end returns
 
+Wishlist:
+- [ ] Support spatial keyboard for multiple languages
+- [ ] Support carriage return and proper backspace sounds
+- [ ] Play carriage return sounds once per wrapping line
+- [ ] "Drying ink" animation when rendering characters
+
 ## Running locally
 
 ```sh
