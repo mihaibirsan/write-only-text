@@ -6,10 +6,25 @@
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
 
-  const typewriterSounds = Array.from({ length: 9 }, (_, i) => new Howl({ src: [`key${(i%3)+1}.wav`]}));
-  const playAndCycleTypewriterSound = () => {
-    typewriterSounds.unshift(typewriterSounds.pop());
-    typewriterSounds[0].play();
+  const LEFT_SIDE_KEYBOARD = `qwerasdfzxcv1234\`~!@#$`;
+  const MID_SIDE_KEYBOARD = `tyughjbnm567%^& `;
+  const RIGHT_SIDE_KEYBOARD = `iop[]kl;',./890-=*()_+{}|:"<>?\\`;
+
+  const typewriterSounds = Array.from({ length: 3 }, (_, i) => new Howl({ src: [`key${(i%3)+1}.wav`]}));
+  const playAndCycleTypewriterSound = (lastKey) => {
+    if (lastKey === null || lastKey === '') {
+      return;
+    }
+    lastKey = lastKey.toLowerCase();
+    if (LEFT_SIDE_KEYBOARD.includes(lastKey)) {
+      typewriterSounds[0].play();
+    }
+    if (MID_SIDE_KEYBOARD.includes(lastKey)) {
+      typewriterSounds[1].play();
+    }
+    if (RIGHT_SIDE_KEYBOARD.includes(lastKey)) {
+      typewriterSounds[2].play();
+    }
   };
   
   let totalString = window.localStorage.getItem('text') || '';
@@ -63,7 +78,8 @@
   // Update the text when the user types.
   cursorEl.addEventListener('input', (event) => {
     totalString = cursorEl.value;
-    playAndCycleTypewriterSound();
+    const fakeLastKey = totalString.substring(cursorEl.selectionStart - 1, cursorEl.selectionStart);
+    playAndCycleTypewriterSound(fakeLastKey);
     setTimeout(() => commit(event), 20);
   });
 
