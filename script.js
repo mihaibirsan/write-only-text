@@ -13,8 +13,10 @@
   let startTime = window.localStorage.getItem('startTime') || null;
   let endTime = window.localStorage.getItem('endTime') || null;
   
-  const currentTimeString = () => luxon.DateTime.now().set({ seconds: 0, milliseconds: 0 }).toISO({ suppressSeconds: true })
-  const wordCount = () => (totalString.match(/\w+/g) || []).length
+  const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
+  const timeStringToZettelID = (timeString) => timeString.replaceAll(/[- :T]+/g, '');
+  const zettelIDPretty = (zettelID) => zettelID.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(.+)/, '<span>$1</span><span>$2</span><span>$3</span><span>$4$5</span><span>$6</span>');
+  const wordCount = () => (totalString.match(/\p{L}+/gu) || []).length
   
   function commit(event) {
     textEl.innerText = totalString;
@@ -22,7 +24,15 @@
     event?.preventDefault();
     cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    timeEl.innerText = `${startTime} - ${endTime}`;
+    if (startTime === null) {
+      timeEl.innerHTML = '<span>Just start typing.</span>';
+    } else {
+      timeEl.innerHTML = [
+        zettelIDPretty(timeStringToZettelID(startTime)),
+        '<span>-></span>',
+        zettelIDPretty(timeStringToZettelID(endTime)),
+      ].join('');
+    }
     wordCountEl.innerText = `• ${wordCount()} words`;
   }
   commit()
@@ -70,6 +80,10 @@
   const clearButtonEl =   document.querySelector('button#clear');
   clearButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
+      if (!window.confirm('Are you sure you want to clear the text?')) {
+        return;
+      }
+
       totalString = '';
       cursorEl.value = totalString;
       startTime = null;
