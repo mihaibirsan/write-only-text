@@ -5,6 +5,37 @@
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
+
+  const LEFT_SIDE_KEYBOARD = `qwerasdfzxcv1234\`~!@#$`;
+  const MID_SIDE_KEYBOARD = `tyughjbnm567%^& `;
+  const RIGHT_SIDE_KEYBOARD = `iop[]kl;',./890-=*()_+{}|:"<>?\\`;
+
+  const typewriterSounds = new Howl({
+    src: ['43560__tams_kp__typewriter22.mp3'],
+    sprite: {
+      dingAndReturn: [(60+51)*1000, 1000],
+      return: [50*1000, 1000],
+    }
+  })
+  const keySounds = Array.from({ length: 3 }, (_, i) => new Howl({ src: [`key${(i%3)+1}.wav`]}));
+  const playAndCycleTypewriterSound = (lastKey) => {
+    if (lastKey === null || lastKey === '') {
+      return;
+    }
+    lastKey = lastKey.toLowerCase();
+    if (LEFT_SIDE_KEYBOARD.includes(lastKey)) {
+      keySounds[0].play();
+    }
+    if (MID_SIDE_KEYBOARD.includes(lastKey)) {
+      keySounds[1].play();
+    }
+    if (RIGHT_SIDE_KEYBOARD.includes(lastKey)) {
+      keySounds[2].play();
+    }
+    if ("\r\n".includes(lastKey)) {
+      typewriterSounds.play('dingAndReturn');
+    }
+  };
   
   let totalString = window.localStorage.getItem('text') || '';
   textEl.innerText = totalString;
@@ -13,8 +44,10 @@
   let startTime = window.localStorage.getItem('startTime') || null;
   let endTime = window.localStorage.getItem('endTime') || null;
   
-  const currentTimeString = () => luxon.DateTime.now().set({ seconds: 0, milliseconds: 0 }).toISO({ suppressSeconds: true })
-  const wordCount = () => (totalString.match(/\w+/g) || []).length
+  const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
+  const timeStringToZettelID = (timeString) => timeString.replaceAll(/[- :T]+/g, '');
+  const zettelIDPretty = (zettelID) => zettelID.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(.+)/, '<span>$1</span><span>$2</span><span>$3</span><span>$4$5</span><span>$6</span>');
+  const wordCount = () => (totalString.match(/\p{L}+/gu) || []).length
   
   function commit(event) {
     textEl.innerText = totalString;
@@ -22,7 +55,11 @@
     event?.preventDefault();
     cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    timeEl.innerText = `${startTime} - ${endTime}`;
+    timeEl.innerHTML = [
+      zettelIDPretty(timeStringToZettelID(startTime)),
+      '<span>-></span>',
+      zettelIDPretty(timeStringToZettelID(endTime)),
+    ].join('');
     wordCountEl.innerText = `• ${wordCount()} words`;
   }
   commit()
@@ -51,7 +88,9 @@
   // Update the text when the user types.
   cursorEl.addEventListener('input', (event) => {
     totalString = cursorEl.value;
-    commit(event);
+    const fakeLastKey = totalString.substring(cursorEl.selectionStart - 1, cursorEl.selectionStart);
+    playAndCycleTypewriterSound(fakeLastKey);
+    setTimeout(() => commit(event), 20);
   });
 
   // Keep the cursor at the end of the text.
