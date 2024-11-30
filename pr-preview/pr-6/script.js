@@ -5,12 +5,6 @@
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
-
-  const typewriterSounds = Array.from({ length: 9 }, (_, i) => new Audio(`key${(i%3)+1}.wav`));
-  const playAndCycleTypewriterSound = () => {
-    typewriterSounds.unshift(typewriterSounds.pop());
-    typewriterSounds[0].play();
-  };
   
   let totalString = window.localStorage.getItem('text') || '';
   textEl.innerText = totalString;
@@ -30,11 +24,15 @@
     event?.preventDefault();
     cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    timeEl.innerHTML = [
-      zettelIDPretty(timeStringToZettelID(startTime)),
-      '<span>-></span>',
-      zettelIDPretty(timeStringToZettelID(endTime)),
-    ].join('');
+    if (startTime === null) {
+      timeEl.innerHTML = '<span>Just start typing.</span>';
+    } else {
+      timeEl.innerHTML = [
+        zettelIDPretty(timeStringToZettelID(startTime)),
+        '<span>-></span>',
+        zettelIDPretty(timeStringToZettelID(endTime)),
+      ].join('');
+    }
     wordCountEl.innerText = `• ${wordCount()} words`;
   }
   commit()
@@ -63,8 +61,7 @@
   // Update the text when the user types.
   cursorEl.addEventListener('input', (event) => {
     totalString = cursorEl.value;
-    playAndCycleTypewriterSound();
-    setTimeout(() => commit(event), 20);
+    commit(event);
   });
 
   // Keep the cursor at the end of the text.
@@ -83,6 +80,10 @@
   const clearButtonEl =   document.querySelector('button#clear');
   clearButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
+      if (!window.confirm('Are you sure you want to clear the text?')) {
+        return;
+      }
+
       totalString = '';
       cursorEl.value = totalString;
       startTime = null;
