@@ -29,7 +29,7 @@ Use live reload during development.
 NOTE: Useful when developing for mobile!
 
 ```sh
-npx browser-sync start --server --files "*.*"
+npx run dev
 ```
 
 And perhaps try [Remote debug Android devices - Chrome for Developers](https://developer.chrome.com/docs/devtools/remote-debugging/)!
