@@ -13,6 +13,19 @@
     const read = () => {
       try {
         if (localStorage.length > 0) {
+          if (localStorage.getItem('text') || localStorage.getItem('startTime') || localStorage.getItem('endTime')) {
+            const oldDoc = {
+              uuid: newUUID(),
+              text: localStorage.getItem('text'),
+              startTime: localStorage.getItem('startTime'),
+              endTime: localStorage.getItem('endTime'),
+            };
+            localStorage.removeItem('text');
+            localStorage.removeItem('startTime');
+            localStorage.removeItem('endTime');
+            write(oldDoc);
+            return oldDoc;
+          }
           const doc = JSON.parse(localStorage.getItem(localStorage.key(localStorage.length - 1)));
           if (doc) {
             if (!doc.uuid) {
