@@ -1,17 +1,62 @@
 (function () {
+  const docStorage = (function () {
+    const newUUID = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // write a doc to localStorage
+    const write = (doc) => {
+      if (!doc.text) {
+        localStorage.removeItem(doc.uuid);
+      } else {
+        localStorage.setItem(doc.uuid, JSON.stringify(doc));
+      }
+    };
+    // read the latest doc from localStorage or create a new one
+    const read = () => {
+      try {
+        if (localStorage.length > 0) {
+          const doc = JSON.parse(localStorage.getItem(localStorage.key(localStorage.length - 1)));
+          if (doc) {
+            if (!doc.uuid) {
+              doc.uuid = newUUID();
+            }
+            return doc;
+          }
+        }
+      } catch (error) {
+        console.error('Error reading from localStorage', error);
+      }
+      return { uuid: newUUID() };
+    };
+
+    const doc = read();
+
+    return {
+      new() {
+        doc.uuid = newUUID();
+        doc.text = '';
+      },
+      getItem(key) {
+        return doc[key];
+      },
+      setItem(key, value) {
+        doc[key] = value;
+        write(doc);
+      },
+    }
+  })();
+
   const params = new URLSearchParams(location.search);
   document.documentElement.className = params.get('theme');
   const textEl = document.getElementById('text');
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
-  
-  let totalString = window.localStorage.getItem('text') || '';
+
+  let totalString = docStorage.getItem('text') || '';
   textEl.innerText = totalString;
   cursorEl.value = totalString;
   
-  let startTime = window.localStorage.getItem('startTime') || null;
-  let endTime = window.localStorage.getItem('endTime') || null;
+  let startTime = docStorage.getItem('startTime') || null;
+  let endTime = docStorage.getItem('endTime') || null;
   
   const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
   const timeStringToZettelID = (timeString) => timeString.replaceAll(/[- :T]+/g, '');
@@ -20,7 +65,7 @@
   
   function commit(event) {
     textEl.innerText = totalString;
-    window.localStorage.setItem('text', totalString);
+    docStorage.setItem('text', totalString);
     event?.preventDefault();
     cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
@@ -40,10 +85,10 @@
   function keydownListener(event) {
     if (startTime === null) {
       startTime = currentTimeString();
-      window.localStorage.setItem('startTime', startTime);
+      docStorage.setItem('startTime', startTime);
     }
     endTime = currentTimeString();
-    window.localStorage.setItem('endTime', endTime);
+    docStorage.setItem('endTime', endTime);
 
     // Make sure there's input from keyboard.
     if (document.activeElement !== cursorEl) {
@@ -87,9 +132,8 @@
       totalString = '';
       cursorEl.value = totalString;
       startTime = null;
-      window.localStorage.removeItem('startTime');
       endTime = null;
-      window.localStorage.removeItem('endTime');
+      docStorage.new();
       commit(event);
       clearButtonEl.blur();
     });
