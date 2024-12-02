@@ -1,0 +1,8 @@
+{
+  "name": "write-only-text",
+  "version": "0.0.1",
+  "scripts": {
+    "build-badge": "node scripts/build-badge.js",
+    "dev": "npx browser-sync --config scripts/browser-sync-config.js"
+  }
+}
