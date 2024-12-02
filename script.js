@@ -42,11 +42,22 @@
 
     const doc = read();
 
+    function switchTo(key) {
+      const oldDoc = JSON.parse(localStorage.getItem(key));
+      if (oldDoc) {
+        doc.uuid = oldDoc.uuid;
+        doc.text = oldDoc.text;
+        doc.startTime = oldDoc.startTime;
+        doc.endTime = oldDoc.endTime;
+      }
+    }
+
     return {
       new() {
         doc.uuid = newUUID();
         doc.text = '';
       },
+      switchTo,
       getItem(key) {
         return doc[key];
       },
@@ -149,6 +160,49 @@
       docStorage.new();
       commit(event);
       clearButtonEl.blur();
+    });
+
+  const historyOverlayEl = document.querySelector('div#history-overlay');
+  historyOverlayEl
+    .addEventListener('click', function historyOverlayClickListener(event) {
+      const target = event.target.closest('div.history-item');
+      console.log(target);
+      if (target.dataset.key) {
+        docStorage.switchTo(target.dataset.key);
+        totalString = docStorage.getItem('text');
+        cursorEl.value = totalString;
+        startTime = docStorage.getItem('startTime');
+        endTime = docStorage.getItem('endTime');
+        commit(event);
+      }
+      historyOverlayEl.style.display = 'none';
+    });
+
+  function populateHistory() {
+    // list all items in the localStorage, one per line, into historyOverlayEl
+    historyOverlayEl.innerHTML = '';
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const doc = JSON.parse(localStorage.getItem(key));
+      if (doc) {
+        const historyItemEl = document.createElement('div');
+        historyItemEl.className = 'history-item';
+        historyItemEl.dataset.key = key;
+        historyItemEl.innerHTML = [
+          `<span class="zettel-id">${zettelIDPretty(timeStringToZettelID(doc.startTime))}</span>`,
+          '<span> </span>',
+          `<span>${doc.text.slice(0, 20)}...</span>`,
+        ].join('');
+        historyOverlayEl.appendChild(historyItemEl);
+      }
+    }
+  }
+
+  const historyButtonEl = document.querySelector('button#history');
+  historyButtonEl
+    .addEventListener('click', function clearButtonClickListener(event) {
+      populateHistory();
+      historyOverlayEl.style.display = 'block';
     });
 })();
 

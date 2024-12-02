@@ -7,10 +7,19 @@ html, body {
   font: 14px Consolas, monospace;
 }
 
+#history-overlay {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: #2F3437;
+  opacity: 0.95;
+  z-index: 1;
+}
+
 #enclosure, #time, #wordcount {
   white-space: pre-wrap;
 }
 
+.zettel-id > span:nth-child(odd),
 #time > span:nth-child(odd) {
   opacity: 0.5;
 }
