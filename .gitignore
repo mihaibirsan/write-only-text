@@ -1,3 +1,4 @@
+node_modules/
 
 # Ignore PR preview deployment artifacts
 pr-preview/*/bare_pr_preview/
