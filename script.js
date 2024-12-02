@@ -69,11 +69,30 @@
     cursorEl.setSelectionRange(cursorEl.value.length, cursorEl.value.length);
   });
 
+  const textToCopy = () => {
+    const copyTime = currentTimeString();
+    return `${totalString}\n\nStarted at:: ${startTime}\nFinished at:: ${endTime}\nCopied at:: ${copyTime}\nWord count:: ${wordCount()}`;
+  }
+
+  const shareAsFileButtonEl = document.querySelector('button#share-as-file');
+  shareAsFileButtonEl
+    .addEventListener('click', function clearButtonClickListener(event) {
+      const filename = timeStringToZettelID(startTime).replace(/\+.+$/, '');
+      shareAsFile(filename, textToCopy());
+      shareAsFileButtonEl.blur();
+    });
+
+  const shareButtonEl = document.querySelector('button#share');
+  shareButtonEl
+    .addEventListener('click', function clearButtonClickListener(event) {
+      share(textToCopy());
+      shareButtonEl.blur();
+    });
+
   const copyButtonEl = document.querySelector('button#copy');
   copyButtonEl
     .addEventListener('click', function clearButtonClickListener(event) {
-      const copyTime = currentTimeString();
-      copy(`${totalString}\n\nStarted at:: ${startTime}\nFinished at:: ${endTime}\nCopied at:: ${copyTime}\nWord count:: ${wordCount()}`);
+      copy(textToCopy());
       copyButtonEl.blur();
     });
   
@@ -94,6 +113,21 @@
       clearButtonEl.blur();
     });
 })();
+
+function shareAsFile(filename, text) {
+  navigator.share({
+    files: [new File([text], `${filename}.txt`, { type: 'text/plain' })],
+  });
+}
+
+function share(text) {
+  // title is first line
+  const [title] = text.split('\n');
+  navigator.share({
+    title,
+    text,
+  });
+}
 
 function copy(text) {
   const fake = document.body.appendChild(document.createElement("textarea"));
