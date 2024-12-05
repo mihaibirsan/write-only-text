@@ -22,11 +22,22 @@ Basic UX
 npx http-server
 ```
 
+## Multiple documents and history
+
+Working with multiple documents should probably be discouraged, and keeping history just opens up the possibility to procrastinate. Still, it's convenient in some cases, and I'd like to experiment with it.
+
+Feature components
+- [ ] Every new tab gets a UUID and it's added to the history.
+- [ ] Display the list of history docs when a new tab is open.
+- [ ] History older than 30 days is deleted.
+
 ## Development
 
 Use live reload during development.
 
 NOTE: Useful when developing for mobile!
+
+NOTE: Avoid this when testing with multiple tabs. (Use the plain `npx http-server`.)
 
 ```sh
 npx run dev

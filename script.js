@@ -1,17 +1,86 @@
 (function () {
+  const docStorage = (function () {
+    const newUUID = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // write a doc to localStorage
+    const write = (doc) => {
+      if (!doc.text) {
+        localStorage.removeItem(doc.uuid);
+      } else {
+        localStorage.setItem(doc.uuid, JSON.stringify(doc));
+      }
+    };
+    // read the latest doc from localStorage or create a new one
+    const read = () => {
+      try {
+        if (localStorage.length > 0) {
+          if (localStorage.getItem('text') || localStorage.getItem('startTime') || localStorage.getItem('endTime')) {
+            const oldDoc = {
+              uuid: newUUID(),
+              text: localStorage.getItem('text'),
+              startTime: localStorage.getItem('startTime'),
+              endTime: localStorage.getItem('endTime'),
+            };
+            localStorage.removeItem('text');
+            localStorage.removeItem('startTime');
+            localStorage.removeItem('endTime');
+            write(oldDoc);
+            return oldDoc;
+          }
+          const doc = JSON.parse(localStorage.getItem(localStorage.key(localStorage.length - 1)));
+          if (doc) {
+            if (!doc.uuid) {
+              doc.uuid = newUUID();
+            }
+            return doc;
+          }
+        }
+      } catch (error) {
+        console.error('Error reading from localStorage', error);
+      }
+      return { uuid: newUUID() };
+    };
+
+    const doc = read();
+
+    function switchTo(key) {
+      const oldDoc = JSON.parse(localStorage.getItem(key));
+      if (oldDoc) {
+        doc.uuid = oldDoc.uuid;
+        doc.text = oldDoc.text;
+        doc.startTime = oldDoc.startTime;
+        doc.endTime = oldDoc.endTime;
+      }
+    }
+
+    return {
+      new() {
+        doc.uuid = newUUID();
+        doc.text = '';
+      },
+      switchTo,
+      getItem(key) {
+        return doc[key];
+      },
+      setItem(key, value) {
+        doc[key] = value;
+        write(doc);
+      },
+    }
+  })();
+
   const params = new URLSearchParams(location.search);
   document.documentElement.className = params.get('theme');
   const textEl = document.getElementById('text');
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
-  
-  let totalString = window.localStorage.getItem('text') || '';
+
+  let totalString = docStorage.getItem('text') || '';
   textEl.innerText = totalString;
   cursorEl.value = totalString;
   
-  let startTime = window.localStorage.getItem('startTime') || null;
-  let endTime = window.localStorage.getItem('endTime') || null;
+  let startTime = docStorage.getItem('startTime') || null;
+  let endTime = docStorage.getItem('endTime') || null;
   
   const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
   const timeStringToZettelID = (timeString) => timeString.replaceAll(/[- :T]+/g, '');
@@ -20,7 +89,7 @@
   
   function commit(event) {
     textEl.innerText = totalString;
-    window.localStorage.setItem('text', totalString);
+    docStorage.setItem('text', totalString);
     event?.preventDefault();
     cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
@@ -40,10 +109,10 @@
   function keydownListener(event) {
     if (startTime === null) {
       startTime = currentTimeString();
-      window.localStorage.setItem('startTime', startTime);
+      docStorage.setItem('startTime', startTime);
     }
     endTime = currentTimeString();
-    window.localStorage.setItem('endTime', endTime);
+    docStorage.setItem('endTime', endTime);
 
     // Make sure there's input from keyboard.
     if (document.activeElement !== cursorEl) {
@@ -106,11 +175,53 @@
       totalString = '';
       cursorEl.value = totalString;
       startTime = null;
-      window.localStorage.removeItem('startTime');
       endTime = null;
-      window.localStorage.removeItem('endTime');
+      docStorage.new();
       commit(event);
       clearButtonEl.blur();
+    });
+
+  const historyOverlayEl = document.querySelector('div#history-overlay');
+  historyOverlayEl
+    .addEventListener('click', function historyOverlayClickListener(event) {
+      const target = event.target.closest('div.history-item');
+      console.log(target);
+      if (target.dataset.key) {
+        docStorage.switchTo(target.dataset.key);
+        totalString = docStorage.getItem('text');
+        cursorEl.value = totalString;
+        startTime = docStorage.getItem('startTime');
+        endTime = docStorage.getItem('endTime');
+        commit(event);
+      }
+      historyOverlayEl.style.display = 'none';
+    });
+
+  function populateHistory() {
+    // list all items in the localStorage, one per line, into historyOverlayEl
+    historyOverlayEl.innerHTML = '';
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const doc = JSON.parse(localStorage.getItem(key));
+      if (doc) {
+        const historyItemEl = document.createElement('div');
+        historyItemEl.className = 'history-item';
+        historyItemEl.dataset.key = key;
+        historyItemEl.innerHTML = [
+          `<span class="zettel-id">${zettelIDPretty(timeStringToZettelID(doc.startTime))}</span>`,
+          '<span> </span>',
+          `<span>${doc.text.slice(0, 20)}...</span>`,
+        ].join('');
+        historyOverlayEl.appendChild(historyItemEl);
+      }
+    }
+  }
+
+  const historyButtonEl = document.querySelector('button#history');
+  historyButtonEl
+    .addEventListener('click', function clearButtonClickListener(event) {
+      populateHistory();
+      historyOverlayEl.style.display = 'block';
     });
 })();
 
