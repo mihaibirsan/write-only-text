@@ -5,6 +5,7 @@
   const timeEl = document.getElementById('time');
   const wordCountEl = document.getElementById('wordcount');
   const cursorEl = document.getElementById('cursor');
+  const versionStatusEl = document.getElementById('version-status');
   
   let totalString = window.localStorage.getItem('text') || '';
   textEl.innerText = totalString;
@@ -111,6 +112,16 @@
       window.localStorage.removeItem('endTime');
       commit(event);
       clearButtonEl.blur();
+    });
+
+  // Display version number
+  fetch('/package.json')
+    .then(response => response.json())
+    .then(data => {
+      versionStatusEl.innerText = ` v${data.version}`;
+    })
+    .catch(err => {
+      console.error('Failed to fetch version:', err);
     });
 })();
 
