@@ -20,6 +20,23 @@
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "ngycj2kji5");
   </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const offlineStatusEl = document.getElementById('offline-status');
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            offlineStatusEl.innerText = 'Offline Ready';
+            offlineStatusEl.classList.add('ready');
+          }, err => {
+            console.log('ServiceWorker registration failed: ', err);
+            offlineStatusEl.innerText = 'Offline Not Ready';
+            offlineStatusEl.classList.add('not-ready');
+          });
+      });
+    }
+  </script>
 </head>
 
 <body>
@@ -38,6 +55,7 @@
   </div>
   <!-- /html -->
   <div id="badge" style="display: none;"><span class="key">Preview </span><span class="value"><a href="https://github.com/mihaibirsan/write-only-text/pull/4">PR #4</a></span></div>
+  <div id="status"><span id="offline-status">Loading...</span><span id="version-status"></span></div>
   <script src="script.js"></script>
 </body>
 
