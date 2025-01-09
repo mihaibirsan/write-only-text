@@ -72,6 +72,31 @@ textarea#cursor {
   color: rgb(83, 155, 245);
 }
 
+#status {
+  position: fixed; bottom: 0; right: 0;
+  font-size: 12px;
+  background: #EBEBEB33;
+  padding: .2em .5em;
+  border-radius: .5em 0 0 0;
+}
+
+#offline-status.ready::before,
+#offline-status.not-ready::before {
+  content: " ";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin-right: .5em;
+  margin-bottom: -.2em;
+}
+#offline-status.ready::before {
+  background-color: green;
+}
+#offline-status.not-ready::before {
+  background-color: red;
+}
+
 /* Theme: Mauve */
 html.mauve,
 .mauve body {
