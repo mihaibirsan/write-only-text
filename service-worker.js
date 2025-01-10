@@ -1,11 +1,11 @@
 const CACHE_NAME = 'write-only-text-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/package.json',
-  '/style.css',
-  '/script.js',
-  '/site.webmanifest',
+  './',
+  './index.html',
+  './package.json',
+  './style.css',
+  './script.js',
+  './site.webmanifest',
   'https://cdnjs.cloudflare.com/ajax/libs/luxon/3.2.1/luxon.min.js'
 ];
 
@@ -25,7 +25,7 @@ self.addEventListener('fetch', event => {
         // Cache only known paths
         caches.open(CACHE_NAME).then(cache => {
           if (urlsToCache.includes(new URL(event.request.url).pathname)) {
-            cache.put(event.request, networkResponse.clone());
+            cache.put(event.request, networkResponse);
           }
         });
         // Always return network response when available
