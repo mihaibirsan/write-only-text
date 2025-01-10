@@ -115,7 +115,7 @@
     });
 
   // Display version number
-  fetch('/package.json')
+  fetch('package.json')
     .then(response => response.json())
     .then(data => {
       versionStatusEl.innerText = ` v${data.version}`;
