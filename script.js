@@ -37,7 +37,29 @@
     wordCountEl.innerText = `• ${wordCount()} words`;
   }
   commit()
-  
+
+  function copyCommand(event) {
+    event.preventDefault();
+    copy(textToCopy());
+    copyButtonEl.blur();
+  } 
+
+  function clearCommand(event) {
+    event.preventDefault();
+    if (!window.confirm('Are you sure you want to clear the text?')) {
+      return;
+    }
+
+    totalString = '';
+    cursorEl.value = totalString;
+    startTime = null;
+    window.localStorage.removeItem('startTime');
+    endTime = null;
+    window.localStorage.removeItem('endTime');
+    commit(event);
+    clearButtonEl.blur();
+  }
+
   function keydownListener(event) {
     if (startTime === null) {
       startTime = currentTimeString();
@@ -49,6 +71,13 @@
     // Make sure there's input from keyboard.
     if (document.activeElement !== cursorEl) {
       cursorEl.focus();
+    }
+
+    // Keyboard shortcuts
+    if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+      copyCommand(event);
+    } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'x') {
+      clearCommand(event);
     }
   }
   
@@ -92,27 +121,11 @@
 
   const copyButtonEl = document.querySelector('button#copy');
   copyButtonEl
-    .addEventListener('click', function clearButtonClickListener(event) {
-      copy(textToCopy());
-      copyButtonEl.blur();
-    });
+    .addEventListener('click', copyCommand);
   
   const clearButtonEl =   document.querySelector('button#clear');
   clearButtonEl
-    .addEventListener('click', function clearButtonClickListener(event) {
-      if (!window.confirm('Are you sure you want to clear the text?')) {
-        return;
-      }
-
-      totalString = '';
-      cursorEl.value = totalString;
-      startTime = null;
-      window.localStorage.removeItem('startTime');
-      endTime = null;
-      window.localStorage.removeItem('endTime');
-      commit(event);
-      clearButtonEl.blur();
-    });
+    .addEventListener('click', clearCommand);
 
   // Display version number
   fetch('package.json')
