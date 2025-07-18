@@ -2,6 +2,7 @@ const { useState, useEffect, useRef } = React;
 
 // Utility functions from original script
 const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
+// TODO: There's a bug here with timeString being null sometimes
 const timeStringToZettelID = (timeString) => timeString.replaceAll(/[- :T]+/g, '');
 const zettelIDPretty = (zettelID) => zettelID.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(.+)/, '<span>$1</span><span>$2</span><span>$3</span><span>$4$5</span><span>$6</span>');
 const wordCount = (text) => (text.match(/\p{L}+/gu) || []).length;
@@ -38,6 +39,7 @@ function copy(text) {
 }
 
 // Custom hook for localStorage
+// TODO: UNUSED
 function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
     try {
@@ -94,6 +96,7 @@ function TextInput({ doc, onDocChange }) {
     // Always update end time
     newDoc.endTime = currentTimeString();
     
+    // TODO: Is there a better way to model this as reactive?
     onDocChange(newDoc);
   };
 
@@ -106,6 +109,7 @@ function TextInput({ doc, onDocChange }) {
     }
   };
 
+  // NOTE: This would be a lot easier of <textarea> supported selectionchange natively.
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.addEventListener('selectionchange', handleSelectionChange);
@@ -138,17 +142,20 @@ function WordCount({ doc }) {
 // TimeDisplay Component
 function TimeDisplay({ doc }) {
   if (doc.startTime === null) {
-    return <span id="time"><span>Just start typing.</span></span>;
+    return <span id="time">{' '}<span>Just start typing.</span>{' '}</span>;
   }
 
   return (
     <span 
       id="time"
+      // TODO: Verbose composition should be updated
       dangerouslySetInnerHTML={{
         __html: [
+          ' ',
           zettelIDPretty(timeStringToZettelID(doc.startTime)),
           '<span>-></span>',
           zettelIDPretty(timeStringToZettelID(doc.endTime)),
+          ' ',
         ].join('')
       }}
     />
@@ -191,12 +198,15 @@ function ActionButtons({ doc, onClear }) {
   };
 
   return (
-    <div id="buttons">
+    <>
       <button id="share-as-file" onClick={handleShareAsFile}>Share as file</button>
+      {' '}
       <button id="share" onClick={handleShare}>Share</button>
+      {' '}
       <button id="copy" onClick={handleCopy}>Copy</button>
+      {' '}
       <button id="clear" onClick={handleClear}>Clear</button>
-    </div>
+    </>
   );
 }
 
@@ -208,6 +218,7 @@ function VersionStatus() {
     fetch('package.json')
       .then(response => response.json())
       .then(data => {
+        // TODO: Verbose composition should be updated
         setVersion(` v${data.version}`);
       })
       .catch(err => {
@@ -265,6 +276,7 @@ function App() {
       }
 
       // Keyboard shortcuts
+      // TODO: This should just use an app-level API, currently hidden in the ActionButtons component
       if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
         const copyBtn = document.getElementById('copy');
         if (copyBtn) copyBtn.click();
@@ -274,6 +286,7 @@ function App() {
       }
     };
 
+    // This is to bring up the keyboard on mobile
     const handleClick = () => {
       const cursorEl = document.getElementById('cursor');
       if (cursorEl) cursorEl.focus();
@@ -319,9 +332,12 @@ function App() {
       </div>
 
       <div id="toolbar">
-        <ActionButtons doc={doc} onClear={handleClear} />
-        <TimeDisplay doc={doc} />
-        <WordCount doc={doc} />
+        {/* TODO: Reverted to original layout, even though it was semantically incorrect. */}
+        <div id="buttons">
+          <ActionButtons doc={doc} onClear={handleClear} />
+          <TimeDisplay doc={doc} />
+          <WordCount doc={doc} />
+        </div>
       </div>
 
       <div id="badge" style={{display: 'none'}}>
