@@ -5,6 +5,16 @@ Distraction free: write only text. Backspace, copy and clear allowed. Will tell 
 
 Originally developed at [Write Only Text (codepen.io)](https://codepen.io/mihaibirsan/full/rNWdoJj)
 
+## Praise
+
+Sent by Joshua Stavick https://medium.com/@joshuastavick
+
+> You're writing app is incredible. Yesterday I couldn't write more than 400 words in the four hours I was here. 
+> 
+> Today, I've written over 2000, and I still have another writing session planned. 
+> 
+> Thank you!
+
 ## Features
 + Typing only appends to the end of the string. 
 + There is no editing, with one exception: backspace is permitted.
