@@ -210,6 +210,26 @@ function ActionButtons({ doc, onClear }) {
   );
 }
 
+// OfflineReady Component
+function OfflineReady() {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready
+        .then(() => {
+          setIsReady(true);
+        })
+    }
+  }, []);
+
+  return (
+    <span id="offline-status" className={isReady ? 'ready' : 'not-ready'}>
+      {isReady ? 'Offline Ready' : 'Offline Not Ready'}
+    </span>
+  );
+}
+
 // VersionStatus Component
 function VersionStatus() {
   const [version, setVersion] = useState('');
@@ -218,17 +238,18 @@ function VersionStatus() {
     fetch('package.json')
       .then(response => response.json())
       .then(data => {
-        // TODO: Verbose composition should be updated
-        setVersion(` v${data.version}`);
+        setVersion(data.version);
       })
       .catch(err => {
         console.error('Failed to fetch version:', err);
       });
   }, []);
 
-  return (
-    <span id="version-status">{version}</span>
-  );
+  if (version === '') {
+    return <></>;
+  } else {
+    return <span id="version-status">v{version}</span>;
+  }
 }
 
 // Main App Component
@@ -339,16 +360,9 @@ function App() {
           <WordCount doc={doc} />
         </div>
       </div>
-
-      <div id="badge" style={{display: 'none'}}>
-        <span className="key">Preview </span>
-        <span className="value">
-          <a href="https://github.com/mihaibirsan/write-only-text/pull/4">PR #4</a>
-        </span>
-      </div>
       
       <div id="status">
-        <span id="offline-status">Loading...</span>
+        <OfflineReady />{' '}
         <VersionStatus />
       </div>
     </div>
