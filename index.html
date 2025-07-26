@@ -12,6 +12,13 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- React CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.2.1/luxon.min.js"></script>
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -23,16 +30,11 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        const offlineStatusEl = document.getElementById('offline-status');
         navigator.serviceWorker.register('service-worker.js')
           .then(registration => {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            offlineStatusEl.innerText = 'Offline Ready';
-            offlineStatusEl.classList.add('ready');
           }, err => {
             console.log('ServiceWorker registration failed: ', err);
-            offlineStatusEl.innerText = 'Offline Not Ready';
-            offlineStatusEl.classList.add('not-ready');
           });
       });
     }
@@ -40,23 +42,9 @@
 </head>
 
 <body>
-  <!-- html -->
-  <div id="enclosure"><div id="text"></div><textarea id="cursor" name="cursor"></textarea></div>
-
-  <div id="toolbar">
-    <div id="buttons">
-      <button id="share-as-file">Share as file</button>
-      <button id="share">Share</button>
-      <button id="copy">Copy</button>
-      <button id="clear">Clear</button>
-      <span id="time"></span>
-      <span id="wordcount"></span>
-    </div>
-  </div>
-  <!-- /html -->
+  <div id="app"></div>
   <div id="badge" style="display: none;"><span class="key">Preview </span><span class="value"><a href="https://github.com/mihaibirsan/write-only-text/pull/4">PR #4</a></span></div>
-  <div id="status"><span id="offline-status">Loading...</span><span id="version-status"></span></div>
-  <script src="script.js"></script>
+  <script type="text/babel" src="app.js"></script>
 </body>
 
 </html>
