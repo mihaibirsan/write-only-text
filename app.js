@@ -2,8 +2,7 @@ const { useState, useEffect, useRef } = React;
 
 // Utility functions from original script
 const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
-// TODO: There's a bug here with timeString being null sometimes
-const timeStringToZettelID = (timeString) => timeString.replaceAll(/[- :T]+/g, '');
+const timeStringToZettelID = (timeString) => timeString && timeString.replaceAll(/[- :T]+/g, '');
 const zettelIDPretty = (zettelID) => zettelID.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(.+)/, '<span>$1</span><span>$2</span><span>$3</span><span>$4$5</span><span>$6</span>');
 const wordCount = (text) => (text.match(/\p{L}+/gu) || []).length;
 
