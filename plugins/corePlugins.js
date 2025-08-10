@@ -2,7 +2,7 @@
 const CORE_PLUGINS = {
   syntaxHighlighting: {
     name: 'Syntax Highlighting',
-    description: 'Adds syntax coloring to text using markdown-like syntax',
+    description: 'Adds syntax coloring to text using highlight.js markdown syntax',
     defaultConfig: { 
       enabled: false, 
     },
@@ -31,24 +31,20 @@ const CORE_PLUGINS = {
     },
     
     applySyntaxHighlighting(text, config) {
-      // Simple markdown-like syntax highlighting
-      let highlighted = text
-        // Headers
-        .replace(/^(#{1,6})\s+(.+)$/gm, '<span class="syntax-header">$1 $2</span>')
-        // Bold
-        .replace(/\*\*(.*?)\*\*/g, '<span class="syntax-bold">**$1**</span>')
-        // Italic
-        .replace(/\*(.*?)\*/g, '<span class="syntax-italic">*$1*</span>')
-        // Code blocks
-        .replace(/```([\s\S]*?)```/g, '<span class="syntax-code-block">```$1```</span>')
-        // Inline code
-        .replace(/`([^`]+)`/g, '<span class="syntax-code">`$1`</span>')
-        // Links
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span class="syntax-link">[$1]($2)</span>')
-        // Lists
-        .replace(/^(\s*[-*+])\s+(.+)$/gm, '<span class="syntax-list">$1 $2</span>');
+      // Check if highlight.js is available
+      if (typeof hljs === 'undefined') {
+        console.warn('highlight.js not loaded, falling back to plain text');
+        return text;
+      }
       
-      return highlighted;
+      try {
+        // Use highlight.js to highlight the entire text as markdown
+        const highlighted = hljs.highlight(text, { language: 'markdown' });
+        return `<span class="hljs">${highlighted.value}</span>`;
+      } catch (e) {
+        console.warn('Error highlighting with highlight.js:', e);
+        return text;
+      }
     },
     
     slots: {
@@ -70,7 +66,7 @@ const CORE_PLUGINS = {
               {' '}Syntax Highlighting
             </label>
             <p className="plugin-description">
-              Adds visual styling to markdown-like syntax in your text
+              Adds markdown syntax highlighting using highlight.js
             </p>
           </div>
         );
