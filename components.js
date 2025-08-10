@@ -68,6 +68,7 @@ function TextInput({ doc, onDocChange }) {
   // NOTE: This would be a lot easier of <textarea> supported selectionchange natively.
   useEffect(() => {
     if (textareaRef.current) {
+      handleSelectionChange(); // Place cursor at end initially
       textareaRef.current.addEventListener('selectionchange', handleSelectionChange);
       return () => {
         if (textareaRef.current) {
