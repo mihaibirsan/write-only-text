@@ -47,12 +47,6 @@ app.js                 # Main application with plugin integration
 
 ## Configuration
 
-### URL Parameters
-Plugin configurations are automatically synced to URL parameters for easy sharing:
-```
-?plugins=%7B%22syntaxHighlighting%22%3A%7B%22enabled%22%3Atrue%7D%7D
-```
-
 ### localStorage
 Settings persist locally between sessions.
 

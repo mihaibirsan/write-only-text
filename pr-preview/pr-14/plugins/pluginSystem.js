@@ -47,34 +47,12 @@ function PluginSlot({ name, children, ...props }) {
 
 // Plugin Configuration Management
 function createPluginConfig() {
-  // Initialize from URL params first, then localStorage
-  const params = new URLSearchParams(location.search);
-  const urlPlugins = params.get('plugins');
-  
-  if (urlPlugins) {
-    try {
-      return JSON.parse(decodeURIComponent(urlPlugins));
-    } catch (e) {
-      console.warn('Invalid plugins URL parameter');
-    }
-  }
-  
+  // Initialize from localStorage
   const savedConfig = window.localStorage.getItem('pluginConfig');
   return savedConfig ? JSON.parse(savedConfig) : {};
 }
 
 function syncPluginConfig(pluginConfig) {
-  // Sync to URL
-  const params = new URLSearchParams(location.search);
-  if (Object.keys(pluginConfig).length > 0) {
-    params.set('plugins', encodeURIComponent(JSON.stringify(pluginConfig)));
-  } else {
-    params.delete('plugins');
-  }
-  
-  const newUrl = `${location.pathname}?${params.toString()}`;
-  window.history.replaceState({}, '', newUrl);
-  
   // Sync to localStorage
   if (Object.keys(pluginConfig).length > 0) {
     window.localStorage.setItem('pluginConfig', JSON.stringify(pluginConfig));

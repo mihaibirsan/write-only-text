@@ -240,42 +240,71 @@ html.mauve,
   color: #FFB6C1;
 }
 
-/* Syntax Highlighting Styles */
-.syntax-header {
+/* Highlight.js Styling */
+/*
+  Based on Markdown styling https://github.com/highlightjs/highlight.js/blob/5697ae5187746c24732e62cd625f3f83004a44ce/src/languages/markdown.js
+  there are only 9 `className` entries to style
+  - code
+  - bullet
+  - symbol
+  - link
+  - string
+  - strong
+  - emphasis
+  - section
+  - quote
+*/
+
+.hljs {
+  color: #DDD;
+}
+
+.hljs-section {
+  color: white;
+  font-weight: bold;
+}
+
+.hljs-bullet {
+  color: white;
+}
+
+.hljs-link {
   color: #87CEEB;
-  font-weight: bold;
 }
 
-.syntax-bold {
+.hljs-string {
+  color: #98FB98;
+}
+
+.hljs-symbol {
   color: #FFD700;
-  font-weight: bold;
 }
 
-.syntax-italic {
-  color: #DDA0DD;
+.hljs-quote {
+  color: #888;
   font-style: italic;
 }
 
-.syntax-code-block {
-  background: rgba(0, 0, 0, 0.3);
-  color: #98FB98;
-  display: block;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
-  border-left: 3px solid #555;
+.hljs-code {
+  color: #888;
 }
 
-.syntax-code {
-  background: rgba(0, 0, 0, 0.3);
-  color: #98FB98;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
+.hljs-emphasis {
+  font-style: italic;
 }
 
-.syntax-link {
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-tag {
   color: #87CEEB;
 }
 
-.syntax-list {
-  color: #F0E68C;
+.hljs-tag .hljs-name {
+  color: #FFD700;
+}
+
+.hljs-tag .hljs-attr {
+  color: #DDA0DD;
 }

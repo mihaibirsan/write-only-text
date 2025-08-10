@@ -47,7 +47,7 @@ function App() {
     });
   }, [pluginConfig]);
 
-  // Sync plugin config to URL and localStorage
+  // Sync plugin config to localStorage
   useEffect(() => {
     syncPluginConfig(pluginConfig);
   }, [pluginConfig]);
@@ -147,14 +147,10 @@ function App() {
   return (
     <PluginContext.Provider value={pluginContextValue}>
       <div>
-        <PluginSlot name="beforeContent" />
-        
         <div id="enclosure">
           <TextRenderer doc={doc} />
           <TextInput doc={doc} onDocChange={handleDocChange} />
         </div>
-
-        <PluginSlot name="afterContent" />
 
         <div id="toolbar">
           <div id="buttons">
@@ -176,7 +172,6 @@ function App() {
         <div id="status">
           <OfflineReady />{' '}
           <VersionStatus />
-          <PluginSlot name="status" />
         </div>
 
         <PluginSettings 
