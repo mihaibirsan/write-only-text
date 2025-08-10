@@ -4,7 +4,9 @@ const PluginEventEmitter = {
   
   on(event, callback) {
     if (!this.listeners[event]) this.listeners[event] = [];
-    this.listeners[event].push(callback);
+    if (!this.listeners[event].includes(callback)) {
+      this.listeners[event].push(callback);
+    }
   },
   
   emit(event, data) {
@@ -17,10 +19,6 @@ const PluginEventEmitter = {
       this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
     }
   },
-  
-  clear() {
-    this.listeners = {};
-  }
 };
 
 // Plugin Context
@@ -62,9 +60,9 @@ function syncPluginConfig(pluginConfig) {
 }
 
 // Initialize plugins when they are enabled
-function initializePlugin(pluginKey, plugin, config) {
+function initializePlugin(pluginKey, plugin, config, data) {
   if (config.enabled && plugin.initialize) {
-    plugin.initialize(PluginEventEmitter, config);
+    plugin.initialize(PluginEventEmitter, config, data);
   }
 }
 

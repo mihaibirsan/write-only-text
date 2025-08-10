@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useMemo, useRef } = React;
 
 // Main App Component
 function App() {
@@ -19,6 +19,7 @@ function App() {
   // Initialize plugin configuration
   const [pluginConfig, setPluginConfig] = useState(() => createPluginConfig());
   const [showPluginSettings, setShowPluginSettings] = useState(false);
+  const prevPluginConfigRef = useRef({});
 
   // Handle theme from URL params
   useEffect(() => {
@@ -30,21 +31,29 @@ function App() {
   }, []);
 
   // Initialize and cleanup plugins when config changes
-  useEffect(() => {
-    // Cleanup all plugins first
+  useMemo(() => {
+    // Only cleanup plugins that were enabled but are now disabled
     Object.entries(CORE_PLUGINS).forEach(([key, plugin]) => {
-      cleanupPlugin(key, plugin);
-    });
-    
-    // Clear event listeners
-    PluginEventEmitter.clear();
-    
-    // Initialize enabled plugins
-    Object.entries(pluginConfig).forEach(([key, config]) => {
-      if (config.enabled && CORE_PLUGINS[key]) {
-        initializePlugin(key, CORE_PLUGINS[key], config);
+      const wasEnabled = prevPluginConfigRef.current[key]?.enabled || false;
+      const isEnabled = pluginConfig[key]?.enabled || false;
+      
+      if (wasEnabled && !isEnabled) {
+        cleanupPlugin(key, plugin);
       }
     });
+    
+    // Only initialize plugins that were disabled but are now enabled
+    Object.entries(pluginConfig).forEach(([key, config]) => {
+      const wasEnabled = prevPluginConfigRef.current[key]?.enabled || false;
+      const isEnabled = config.enabled || false;
+      
+      if ((!wasEnabled && isEnabled && CORE_PLUGINS[key])) {
+        initializePlugin(key, CORE_PLUGINS[key], config, { doc });
+      }
+    });
+    
+    // Update previous config for next comparison
+    prevPluginConfigRef.current = pluginConfig;
   }, [pluginConfig]);
 
   // Sync plugin config to localStorage
@@ -88,7 +97,8 @@ function App() {
     };
 
     // This is to bring up the keyboard on mobile
-    const handleClick = () => {
+    const handleClick = (event) => {
+      if (event?.target.closest('#plugin-settings')) return;
       const cursorEl = document.getElementById('cursor');
       if (cursorEl) cursorEl.focus();
     };
@@ -124,6 +134,7 @@ function App() {
     setDoc(newDoc);
     window.localStorage.removeItem('startTime');
     window.localStorage.removeItem('endTime');
+    PluginEventEmitter.emit('validate:input', { doc: newDoc });
   };
 
   // Plugin context value

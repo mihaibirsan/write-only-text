@@ -22,30 +22,8 @@ function TextRenderer({ doc }) {
 // TextInput Component - hidden input for capturing keystrokes with plugin support
 function TextInput({ doc, onDocChange }) {
   const textareaRef = useRef(null);
-  const hasStartedRef = useRef(false);
 
   const handleInput = (event) => {
-    // Emit input start event for plugins (only once)
-    if (!hasStartedRef.current && event.target.value.length > 0) {
-      hasStartedRef.current = true;
-      PluginEventEmitter.emit('input:start', { doc, event });
-    }
-    
-    // Validate input with plugins
-    const validation = PluginEventEmitter.emit('validate:input', {
-      allowed: true,
-      event,
-      doc
-    });
-    
-    if (!validation.allowed) {
-      event.preventDefault();
-      if (validation.reason) {
-        console.log('Input blocked:', validation.reason);
-      }
-      return;
-    }
-
     const newDoc = {
       ...doc,
       totalString: event.target.value
@@ -58,6 +36,21 @@ function TextInput({ doc, onDocChange }) {
     
     // Always update end time
     newDoc.endTime = currentTimeString();
+    
+    // Validate input with plugins
+    const validation = PluginEventEmitter.emit('validate:input', {
+      allowed: true,
+      event,
+      doc: newDoc,
+    });
+
+    if (!validation.allowed) {
+      event.preventDefault();
+      if (validation.reason) {
+        console.log('Input blocked:', validation.reason);
+      }
+      return;
+    }
     
     // TODO: Is there a better way to model this as reactive?
     onDocChange(newDoc);
@@ -72,16 +65,10 @@ function TextInput({ doc, onDocChange }) {
     }
   };
 
-  // Reset started flag when document is cleared
-  useEffect(() => {
-    if (doc.totalString === '') {
-      hasStartedRef.current = false;
-    }
-  }, [doc.totalString]);
-
   // NOTE: This would be a lot easier of <textarea> supported selectionchange natively.
   useEffect(() => {
     if (textareaRef.current) {
+      handleSelectionChange(); // Place cursor at end initially
       textareaRef.current.addEventListener('selectionchange', handleSelectionChange);
       return () => {
         if (textareaRef.current) {

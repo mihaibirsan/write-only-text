@@ -7,21 +7,27 @@ const CORE_PLUGINS = {
       enabled: false, 
     },
     
-    initialize(eventEmitter, config) {
+    initialize(eventEmitter, config, data) {
+      this.config = config;
       // Register text rendering transformer
-      eventEmitter.on('render:text', (data) => {
-        if (!config.enabled) return data;
+      if (!this._boundRenderHandler) {
+        this._boundRenderHandler = this.renderHandler.bind(this);
+      }
+      eventEmitter.on('render:text', this._boundRenderHandler);
+    },
+
+    renderHandler(data) {
+        if (!this.config.enabled) return data;
         
         return {
-          content: this.applySyntaxHighlighting(data.content, config),
+          content: this.applySyntaxHighlighting(data.content, this.config),
           isHTML: true
         };
-      });
     },
-    
+
     cleanup(eventEmitter) {
       // Remove all listeners for this plugin
-      eventEmitter.off('render:text', this.renderHandler);
+      eventEmitter.off('render:text', this._boundRenderHandler);
     },
     
     applySyntaxHighlighting(text, config) {
@@ -76,32 +82,37 @@ const CORE_PLUGINS = {
       duration: 25 * 60 * 1000, // 25 minutes in ms
     },
     
-    initialize(eventEmitter, config) {
+    initialize(eventEmitter, config, data) {
       this.config = config;
-      this.startTime = null;
+      this.startTime = data.doc.startTime ? new Date(data.doc.startTime).getTime() : null;
       this.intervalId = null;
-      
-      // Start timer on first input
-      eventEmitter.on('input:start', () => {
-        if (!this.startTime) {
-          this.startTime = Date.now();
-          this.startInterval();
-        }
-      });
+      this.startInterval();
       
       // Validate input based on timer
-      eventEmitter.on('validate:input', (data) => {
-        if (!config.enabled) return data;
-        
-        const timeElapsed = this.startTime ? Date.now() - this.startTime : 0;
-        const timeRemaining = Math.max(0, config.duration - timeElapsed);
-        
-        if (timeRemaining === 0) {
-          return { ...data, allowed: false, reason: 'Pomodoro session complete' };
-        }
-        
-        return data;
-      });
+      if (!this._boundValidateHandler) {
+        this._boundValidateHandler = this.validateHandler.bind(this);
+      }
+      eventEmitter.on('validate:input', this._boundValidateHandler);
+    },
+
+    validateHandler(data) {
+      if (!this.config.enabled) return data;
+      
+      // Start timer if doc has startTime but plugin hasn't started yet
+      if (data.doc.startTime && !this.startTime) {
+        this.startTime = new Date(data.doc.startTime).getTime();
+      }
+      
+      // Reset startTime if it was cleared
+      if (!data.doc.startTime) {
+        this.startTime = null;
+      }
+      
+      if (this.getTimeRemaining() === 0) {
+        return { ...data, allowed: false, reason: 'Pomodoro session complete' };
+      }
+      
+      return data;
     },
     
     cleanup(eventEmitter) {
@@ -110,8 +121,7 @@ const CORE_PLUGINS = {
         this.intervalId = null;
       }
       this.startTime = null;
-      eventEmitter.off('input:start', this.inputStartHandler);
-      eventEmitter.off('validate:input', this.validateHandler);
+      eventEmitter.off('validate:input', this._boundValidateHandler);
     },
     
     startInterval() {
