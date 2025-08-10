@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useMemo, useRef } = React;
 
 // Main App Component
 function App() {
@@ -11,9 +11,14 @@ function App() {
     return {
       totalString: savedText,
       startTime: savedStartTime,
-      endTime: savedEndTime
+      endTime: savedEndTime,
     };
   });
+
+  // Initialize plugin configuration
+  const [pluginConfig, setPluginConfig] = useState(() => createPluginConfig());
+  const [showPluginSettings, setShowPluginSettings] = useState(false);
+  const prevPluginConfigRef = useRef({});
 
   // Handle theme from URL params
   useEffect(() => {
@@ -23,6 +28,37 @@ function App() {
       document.documentElement.className = theme;
     }
   }, []);
+
+  // Initialize and cleanup plugins when config changes
+  useMemo(() => {
+    // Only cleanup plugins that were enabled but are now disabled
+    Object.entries(CORE_PLUGINS).forEach(([key, plugin]) => {
+      const wasEnabled = prevPluginConfigRef.current[key]?.enabled || false;
+      const isEnabled = pluginConfig[key]?.enabled || false;
+      
+      if (wasEnabled && !isEnabled) {
+        cleanupPlugin(plugin);
+      }
+    });
+    
+    // Only initialize plugins that were disabled but are now enabled
+    Object.entries(pluginConfig).forEach(([key, config]) => {
+      const wasEnabled = prevPluginConfigRef.current[key]?.enabled || false;
+      const isEnabled = config.enabled || false;
+      
+      if ((!wasEnabled && isEnabled && CORE_PLUGINS[key])) {
+        initializePlugin(CORE_PLUGINS[key], config, { doc });
+      }
+    });
+    
+    // Update previous config for next comparison
+    prevPluginConfigRef.current = pluginConfig;
+  }, [pluginConfig]);
+
+  // Sync plugin config to localStorage
+  useEffect(() => {
+    syncPluginConfig(pluginConfig);
+  }, [pluginConfig]);
 
   // Save doc to localStorage whenever it changes
   useEffect(() => {
@@ -52,11 +88,16 @@ function App() {
       } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'x') {
         const clearBtn = document.getElementById('clear');
         if (clearBtn) clearBtn.click();
+      } else if ((event.ctrlKey || event.metaKey) && event.key === ',') {
+        // Ctrl/Cmd + , opens plugin settings
+        event.preventDefault();
+        setShowPluginSettings(true);
       }
     };
 
     // This is to bring up the keyboard on mobile
-    const handleClick = () => {
+    const handleClick = (event) => {
+      if (event?.target.closest('#plugin-settings')) return;
       const cursorEl = document.getElementById('cursor');
       if (cursorEl) cursorEl.focus();
     };
@@ -86,34 +127,61 @@ function App() {
     const newDoc = {
       totalString: '',
       startTime: null,
-      endTime: null
+      endTime: null,
     };
     setDoc(newDoc);
     window.localStorage.removeItem('startTime');
     window.localStorage.removeItem('endTime');
+    PluginEventEmitter.emit('validate:input', { doc: newDoc });
+  };
+
+  // Plugin context value
+  const pluginContextValue = {
+    config: pluginConfig,
+    updateConfig: (pluginKey, newConfig) => {
+      setPluginConfig(prev => ({
+        ...prev,
+        [pluginKey]: { ...prev[pluginKey], ...newConfig }
+      }));
+    },
   };
 
   return (
-    <div>
-      <div id="enclosure">
-        <TextRenderer doc={doc} />
-        <TextInput doc={doc} onDocChange={handleDocChange} />
-      </div>
-
-      <div id="toolbar">
-        {/* TODO: Reverted to original layout, even though it was semantically incorrect. */}
-        <div id="buttons">
-          <ActionButtons doc={doc} onClear={handleClear} />
-          <TimeDisplay doc={doc} />
-          <WordCount doc={doc} />
+    <PluginContext.Provider value={pluginContextValue}>
+      <div>
+        <div id="enclosure">
+          <TextRenderer doc={doc} />
+          <TextInput doc={doc} onDocChange={handleDocChange} />
         </div>
+
+        <div id="toolbar">
+          <div id="buttons">
+            <ActionButtons doc={doc} onClear={handleClear} />
+            <PluginSlot name="toolbar" doc={doc} />
+            <TimeDisplay doc={doc} />
+            <WordCount doc={doc} />
+            {' '}
+            <button 
+              id="plugin-settings-btn"
+              onClick={() => setShowPluginSettings(true)}
+              title="Plugin Settings (Ctrl+,)"
+            >
+              ⚙️
+            </button>
+          </div>
+        </div>
+        
+        <div id="status">
+          <OfflineReady />{' '}
+          <VersionStatus />
+        </div>
+
+        <PluginSettings 
+          isVisible={showPluginSettings}
+          onClose={() => setShowPluginSettings(false)}
+        />
       </div>
-      
-      <div id="status">
-        <OfflineReady />{' '}
-        <VersionStatus />
-      </div>
-    </div>
+    </PluginContext.Provider>
   );
 }
 

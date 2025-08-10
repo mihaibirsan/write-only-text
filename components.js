@@ -1,13 +1,25 @@
 const { useState, useEffect, useRef } = React;
 
-// TextRenderer Component - displays the text
+// TextRenderer Component - displays the text with plugin support
 function TextRenderer({ doc }) {
+  // Apply text rendering plugins via events
+  const renderedContent = PluginEventEmitter.emit('render:text', {
+    content: doc.totalString,
+    isHTML: false
+  });
+  
   return (
-    <div id="text">{doc.totalString}</div>
+    <div 
+      id="text"
+      {...(renderedContent.isHTML 
+        ? { dangerouslySetInnerHTML: { __html: renderedContent.content } }
+        : { children: renderedContent.content }
+      )}
+    />
   );
 }
 
-// TextInput Component - hidden input for capturing keystrokes
+// TextInput Component - hidden input for capturing keystrokes with plugin support
 function TextInput({ doc, onDocChange }) {
   const textareaRef = useRef(null);
 
@@ -24,6 +36,21 @@ function TextInput({ doc, onDocChange }) {
     
     // Always update end time
     newDoc.endTime = currentTimeString();
+    
+    // Validate input with plugins
+    const validation = PluginEventEmitter.emit('validate:input', {
+      allowed: true,
+      event,
+      doc: newDoc,
+    });
+
+    if (!validation.allowed) {
+      event.preventDefault();
+      if (validation.reason) {
+        console.log('Input blocked:', validation.reason);
+      }
+      return;
+    }
     
     // TODO: Is there a better way to model this as reactive?
     onDocChange(newDoc);
@@ -51,9 +78,9 @@ function TextInput({ doc, onDocChange }) {
   }, []);
 
   return (
-    <textarea 
+    <textarea
       ref={textareaRef}
-      id="cursor" 
+      id="cursor"
       name="cursor"
       value={doc.totalString}
       onChange={handleInput}
@@ -179,4 +206,32 @@ function VersionStatus() {
   } else {
     return <span id="version-status">v{version}</span>;
   }
+}
+
+// Plugin Settings Component
+function PluginSettings({ isVisible, onClose }) {
+  if (!isVisible) return null;
+  
+  return (
+    <div id="plugin-settings" className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>Plugin Settings</h3>
+          <button 
+            className="modal-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <div className="modal-body">
+          <PluginSlot name="settings" />
+        </div>
+        <div className="modal-footer">
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
 }
