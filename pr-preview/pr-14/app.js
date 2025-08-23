@@ -12,7 +12,6 @@ function App() {
       totalString: savedText,
       startTime: savedStartTime,
       endTime: savedEndTime,
-      pluginData: {},
     };
   });
 
@@ -38,7 +37,7 @@ function App() {
       const isEnabled = pluginConfig[key]?.enabled || false;
       
       if (wasEnabled && !isEnabled) {
-        cleanupPlugin(key, plugin);
+        cleanupPlugin(plugin);
       }
     });
     
@@ -48,7 +47,7 @@ function App() {
       const isEnabled = config.enabled || false;
       
       if ((!wasEnabled && isEnabled && CORE_PLUGINS[key])) {
-        initializePlugin(key, CORE_PLUGINS[key], config, { doc });
+        initializePlugin(CORE_PLUGINS[key], config, { doc });
       }
     });
     
@@ -129,7 +128,6 @@ function App() {
       totalString: '',
       startTime: null,
       endTime: null,
-      pluginData: {},
     };
     setDoc(newDoc);
     window.localStorage.removeItem('startTime');
@@ -146,13 +144,6 @@ function App() {
         [pluginKey]: { ...prev[pluginKey], ...newConfig }
       }));
     },
-    getPluginData: (pluginKey) => doc.pluginData[pluginKey],
-    setPluginData: (pluginKey, data) => {
-      setDoc(prev => ({
-        ...prev,
-        pluginData: { ...prev.pluginData, [pluginKey]: data }
-      }));
-    }
   };
 
   return (
@@ -166,9 +157,9 @@ function App() {
         <div id="toolbar">
           <div id="buttons">
             <ActionButtons doc={doc} onClear={handleClear} />
+            <PluginSlot name="toolbar" doc={doc} />
             <TimeDisplay doc={doc} />
             <WordCount doc={doc} />
-            <PluginSlot name="toolbar" doc={doc} />
             {' '}
             <button 
               id="plugin-settings-btn"

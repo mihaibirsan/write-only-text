@@ -25,8 +25,6 @@ const PluginEventEmitter = {
 const PluginContext = React.createContext({
   config: {},
   updateConfig: () => {},
-  getPluginData: () => {},
-  setPluginData: () => {}
 });
 
 // Plugin Slot Component
@@ -60,14 +58,14 @@ function syncPluginConfig(pluginConfig) {
 }
 
 // Initialize plugins when they are enabled
-function initializePlugin(pluginKey, plugin, config, data) {
+function initializePlugin(plugin, config, data) {
   if (config.enabled && plugin.initialize) {
     plugin.initialize(PluginEventEmitter, config, data);
   }
 }
 
 // Cleanup plugins when they are disabled
-function cleanupPlugin(pluginKey, plugin) {
+function cleanupPlugin(plugin) {
   if (plugin.cleanup) {
     plugin.cleanup(PluginEventEmitter);
   }

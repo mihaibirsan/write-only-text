@@ -25,7 +25,7 @@ app.js                 # Main application with plugin integration
 
 2. **Plugin Context** (`PluginContext`)
    - React context for sharing plugin state
-   - Provides: `config`, `updateConfig`, `getPluginData`, `setPluginData`
+   - Provides: `config`, `updateConfig`
 
 3. **Plugin Slots** (`PluginSlot`)
    - UI injection points for plugin components
