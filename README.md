@@ -20,11 +20,12 @@ Sent by Joshua Stavick https://medium.com/@joshuastavick
 + There is no editing, with one exception: backspace is permitted.
 + Text is saved to localStorage, for convenience.
 
+Activate in ⚙️ Plugin Settings
++ Pomodoro Timer
++ Markdown Syntax Highlighting
+
 Basic UX
 + Confirmation dialog when clearing text.
-
-## TODO
-+ Keep a timer.
 
 ## Running locally
 
