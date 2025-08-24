@@ -1,6 +1,0 @@
-node_modules/
-
-# Ignore PR preview deployment artifacts
-pr-preview/*/bare_pr_preview/
-pr-preview/*/github-pages-deploy-action-temp-deployment-folder/
-
