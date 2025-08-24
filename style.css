@@ -108,3 +108,203 @@ html.mauve,
 .mauve #text {
   background: #8878bfC0;
 }
+
+/* Plugin Settings Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2F3437;
+  border: 1px solid #555;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #555;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #EBEBEB;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #EBEBEB;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.modal-footer {
+  padding: 1rem;
+  border-top: 1px solid #555;
+  text-align: right;
+}
+
+.plugin-setting {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.plugin-setting:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.plugin-setting label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #EBEBEB;
+  font-weight: bold;
+}
+
+.plugin-description {
+  margin: 0.5rem 0;
+  color: #AAA;
+  font-size: 0.9rem;
+}
+
+.plugin-options {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.plugin-options label {
+  font-weight: normal;
+  margin-bottom: 0.25rem;
+}
+
+/* Plugin UI Elements */
+#plugin-settings-btn {
+  background: none;
+  border: none;
+  color: #EBEBEB;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+}
+
+#plugin-settings-btn:hover {
+  opacity: 0.7;
+}
+
+#pomodoro-timer {
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+#pomodoro-timer.active {
+  background: rgba(0, 255, 0, 0.2);
+  color: #90EE90;
+}
+
+#pomodoro-timer.expired {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FFB6C1;
+}
+
+/* Highlight.js Styling */
+/*
+  Based on Markdown styling https://github.com/highlightjs/highlight.js/blob/5697ae5187746c24732e62cd625f3f83004a44ce/src/languages/markdown.js
+  there are only 9 `className` entries to style
+  - code
+  - bullet
+  - symbol
+  - link
+  - string
+  - strong
+  - emphasis
+  - section
+  - quote
+*/
+
+.hljs {
+  color: #DDD;
+}
+
+.hljs-section {
+  color: white;
+  font-weight: bold;
+}
+
+.hljs-bullet {
+  color: white;
+}
+
+.hljs-link {
+  color: #87CEEB;
+}
+
+.hljs-string {
+  color: #98FB98;
+}
+
+.hljs-symbol {
+  color: #FFD700;
+}
+
+.hljs-quote {
+  color: #888;
+  font-style: italic;
+}
+
+.hljs-code {
+  color: #888;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-tag {
+  color: #87CEEB;
+}
+
+.hljs-tag .hljs-name {
+  color: #FFD700;
+}
+
+.hljs-tag .hljs-attr {
+  color: #DDA0DD;
+}

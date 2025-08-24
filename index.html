@@ -13,6 +13,9 @@
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="style.css">
   
+  <!-- Highlight.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  
   <!-- React CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -44,6 +47,12 @@
 <body>
   <div id="app"></div>
   <div id="badge" style="display: none;"><span class="key">Preview </span><span class="value"><a href="https://github.com/mihaibirsan/write-only-text/pull/4">PR #4</a></span></div>
+  
+  <!-- Load application scripts in dependency order -->
+  <script type="text/babel" src="utils.js"></script>
+  <script type="text/babel" src="plugins/pluginSystem.js"></script>
+  <script type="text/babel" src="plugins/corePlugins.js"></script>
+  <script type="text/babel" src="components.js"></script>
   <script type="text/babel" src="app.js"></script>
 </body>
 

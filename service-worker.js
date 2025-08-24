@@ -4,9 +4,14 @@ const urlsToCache = [
   './index.html',
   './package.json',
   './style.css',
+  './utils.js',
+  './plugins/pluginSystem.js',
+  './plugins/corePlugins.js',
+  './components.js',
   './app.js',
   './site.webmanifest',
-  'https://cdnjs.cloudflare.com/ajax/libs/luxon/3.2.1/luxon.min.js'
+  'https://cdnjs.cloudflare.com/ajax/libs/luxon/3.2.1/luxon.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js',
 ];
 
 self.addEventListener('install', event => {
