@@ -3,6 +3,8 @@
 ## Project Overview
 Write Only Text is a distraction-free writing app with a unique constraint: text can only be appended (no editing except backspace). The app recently transitioned from vanilla JavaScript to React while maintaining CDN-based dependencies and no build tools.
 
+The app features a composable plugin system that allows users to enable/disable features like syntax highlighting and pomodoro timers. For detailed plugin system documentation, see [`plugins/README.md`](../plugins/README.md).
+
 ## Architecture Patterns
 
 ### Input/Render Decoupling
@@ -28,10 +30,21 @@ All text state is centralized in a `doc` object with three properties:
 }
 ```
 
+### Plugin System
+The app includes a composable plugin system with event-driven architecture:
+- **Event System**: `PluginEventEmitter` handles `render:text` and `validate:input` events
+- **Plugin Context**: React context provides plugin configuration state
+- **Plugin Slots**: UI injection points (`toolbar`, `settings`) for plugin components
+- **Built-in Plugins**: Syntax highlighting (highlight.js) and Pomodoro timer
+- **Configuration**: Settings persist in localStorage under `pluginConfig` key
+- **Keyboard Shortcut**: `Ctrl/Cmd + ,` opens plugin settings modal
+
+See [`plugins/README.md`](../plugins/README.md) for complete plugin development documentation.
+
 ### No Build Tools Philosophy
 - Uses React via CDN with Babel standalone for JSX transformation
 - Scripts loaded with `type="text/babel"` for JSX compilation
-- Dependencies: React 18, Luxon for time handling, Babel standalone
+- Dependencies: React 18, Luxon for time handling, highlight.js for syntax highlighting, Babel standalone
 
 ## Key Components
 
@@ -67,9 +80,15 @@ npm run dev  # Starts browser-sync with live reload
 ### File Structure
 ```
 ├── app.js              # React components (CDN-based, no build)
+├── components.js       # React UI components with plugin support
+├── utils.js           # Utility functions (time, sharing, copying)
 ├── index.html          # Main HTML with CDN script tags
 ├── style.css           # Styling with theme support
 ├── service-worker.js   # Offline caching
+├── plugins/
+│   ├── pluginSystem.js # Core plugin infrastructure
+│   ├── corePlugins.js  # Built-in plugins (syntax highlighting, pomodoro)
+│   └── README.md       # Plugin development documentation
 ├── scripts/
 │   ├── browser-sync-config.js  # Dev server with middleware
 │   └── build-badge.js          # Badge generation
