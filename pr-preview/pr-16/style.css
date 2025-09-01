@@ -1,0 +1,310 @@
+/* see also https://color.adobe.com/Moon-Stone-color-theme-9946152/ */
+
+html, body {
+  margin: 0; height: 100vh;
+  background: #2F3437;
+  color: #EBEBEB;
+  font: 14px Consolas, monospace;
+}
+
+#enclosure, #time, #wordcount {
+  white-space: pre-wrap;
+}
+
+#time > span:nth-child(odd) {
+  opacity: 0.5;
+}
+
+#enclosure {
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 20vh 0;
+}
+
+#text {
+  min-height: 60vh;
+  box-sizing: border-box;
+  padding: .5em;
+}
+
+textarea#cursor {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  resize: none;
+}
+
+#text:after {
+  position: absolute;
+  content: "█"; /* https://www.fileformat.info/info/unicode/char/2588/index.htm */
+  opacity: 0.1; /* TODO: animate-to 0.05 at the pace of a breath */
+}
+
+#toolbar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  max-width: 40em;
+  height: 20vh;
+  margin: 0 auto;
+  padding: 1em 0;
+  background: linear-gradient(
+0deg, #2F3437, rgba(0x2F, 0x34, 0x37, .8), transparent);
+}
+
+#badge {
+  position: fixed; top: 0; left: 50%;
+  background: #EBEBEB33;
+  font-size: 12px;
+  border-radius: 0 0 .5em .5em;
+}
+#badge .key,
+#badge .value {
+  display: inline-block;
+  padding: 0 .5em .2em;
+}
+#badge .key {
+  background: #2F343766;
+}
+#badge .value a {
+  color: rgb(83, 155, 245);
+}
+
+#status {
+  position: fixed; bottom: 0; right: 0;
+  font-size: 12px;
+  background: #EBEBEB33;
+  padding: .2em .5em;
+  border-radius: .5em 0 0 0;
+}
+
+#offline-status.ready::before,
+#offline-status.not-ready::before {
+  content: " ";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin-right: .5em;
+  margin-bottom: -.2em;
+}
+#offline-status.ready::before {
+  background-color: green;
+}
+#offline-status.not-ready::before {
+  background-color: red;
+}
+
+/* Theme: Mauve */
+html.mauve,
+.mauve body {
+  /* https://heropatterns.com/ Random Shapes */
+  background-color: #8878bf;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%239184bf' fill-opacity='1'%3E%3Cpath fill-rule='evenodd' d='M11 0l5 20H6l5-20zm42 31a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM0 72h40v4H0v-4zm0-8h31v4H0v-4zm20-16h20v4H20v-4zM0 56h40v4H0v-4zm63-25a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM53 41a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-30 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-28-8a5 5 0 0 0-10 0h10zm10 0a5 5 0 0 1-10 0h10zM56 5a5 5 0 0 0-10 0h10zm10 0a5 5 0 0 1-10 0h10zm-3 46a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM21 0l5 20H16l5-20zm43 64v-4h-4v4h-4v4h4v4h4v-4h4v-4h-4zM36 13h4v4h-4v-4zm4 4h4v4h-4v-4zm-4 4h4v4h-4v-4zm8-8h4v4h-4v-4z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.mauve #text {
+  background: #8878bfC0;
+}
+
+/* Plugin Settings Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2F3437;
+  border: 1px solid #555;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #555;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #EBEBEB;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #EBEBEB;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.modal-footer {
+  padding: 1rem;
+  border-top: 1px solid #555;
+  text-align: right;
+}
+
+.plugin-setting {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.plugin-setting:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.plugin-setting label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #EBEBEB;
+  font-weight: bold;
+}
+
+.plugin-description {
+  margin: 0.5rem 0;
+  color: #AAA;
+  font-size: 0.9rem;
+}
+
+.plugin-options {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.plugin-options label {
+  font-weight: normal;
+  margin-bottom: 0.25rem;
+}
+
+/* Plugin UI Elements */
+#plugin-settings-btn {
+  background: none;
+  border: none;
+  color: #EBEBEB;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+}
+
+#plugin-settings-btn:hover {
+  opacity: 0.7;
+}
+
+#pomodoro-timer {
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+#pomodoro-timer.active {
+  background: rgba(0, 255, 0, 0.2);
+  color: #90EE90;
+}
+
+#pomodoro-timer.expired {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FFB6C1;
+}
+
+/* Highlight.js Styling */
+/*
+  Based on Markdown styling https://github.com/highlightjs/highlight.js/blob/5697ae5187746c24732e62cd625f3f83004a44ce/src/languages/markdown.js
+  there are only 9 `className` entries to style
+  - code
+  - bullet
+  - symbol
+  - link
+  - string
+  - strong
+  - emphasis
+  - section
+  - quote
+*/
+
+.hljs {
+  color: #DDD;
+}
+
+.hljs-section {
+  color: white;
+  font-weight: bold;
+}
+
+.hljs-bullet {
+  color: white;
+}
+
+.hljs-link {
+  color: #87CEEB;
+}
+
+.hljs-string {
+  color: #98FB98;
+}
+
+.hljs-symbol {
+  color: #FFD700;
+}
+
+.hljs-quote {
+  color: #888;
+  font-style: italic;
+}
+
+.hljs-code {
+  color: #888;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-tag {
+  color: #87CEEB;
+}
+
+.hljs-tag .hljs-name {
+  color: #FFD700;
+}
+
+.hljs-tag .hljs-attr {
+  color: #DDA0DD;
+}
