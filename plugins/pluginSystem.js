@@ -1,19 +1,19 @@
 // Plugin Event System
 const PluginEventEmitter = {
   listeners: {},
-  
+
   on(event, callback) {
     if (!this.listeners[event]) this.listeners[event] = [];
     if (!this.listeners[event].includes(callback)) {
       this.listeners[event].push(callback);
     }
   },
-  
+
   emit(event, data) {
     if (!this.listeners[event]) return data;
     return this.listeners[event].reduce((acc, callback) => callback(acc), data);
   },
-  
+
   off(event, callback) {
     if (this.listeners[event]) {
       this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
@@ -27,18 +27,40 @@ const PluginContext = React.createContext({
   updateConfig: () => {},
 });
 
-// Plugin Slot Component
+// Plugin Slot Component - renders UI slots for plugins
 function PluginSlot({ name, children, ...props }) {
   const { config } = React.useContext(PluginContext);
-  
+
   const pluginComponents = Object.entries(CORE_PLUGINS)
     .filter(([key, plugin]) => plugin.slots?.[name])
     .map(([key, plugin]) => {
       const Component = plugin.slots[name];
       return <Component key={key} {...props} />;
     });
-  
+
   return <>{children}{pluginComponents}</>;
+}
+
+// Plugin Manager Component - renders all enabled plugin components
+function PluginManager({ doc }) {
+  const { config } = React.useContext(PluginContext);
+
+  const enabledPlugins = Object.entries(CORE_PLUGINS)
+    .filter(([key, plugin]) => config[key]?.enabled)
+    .map(([key, plugin]) => {
+      const PluginComponent = plugin.component;
+      const pluginConfig = config[key];
+
+      return (
+        <PluginComponent
+          key={key}
+          config={pluginConfig}
+          doc={doc}
+        />
+      );
+    });
+
+  return <>{enabledPlugins}</>;
 }
 
 // Plugin Configuration Management
@@ -54,19 +76,5 @@ function syncPluginConfig(pluginConfig) {
     window.localStorage.setItem('pluginConfig', JSON.stringify(pluginConfig));
   } else {
     window.localStorage.removeItem('pluginConfig');
-  }
-}
-
-// Initialize plugins when they are enabled
-function initializePlugin(plugin, config, data) {
-  if (config.enabled && plugin.initialize) {
-    plugin.initialize(PluginEventEmitter, config, data);
-  }
-}
-
-// Cleanup plugins when they are disabled
-function cleanupPlugin(plugin) {
-  if (plugin.cleanup) {
-    plugin.cleanup(PluginEventEmitter);
   }
 }
