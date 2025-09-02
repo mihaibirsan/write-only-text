@@ -109,6 +109,34 @@ html.mauve,
   background: #8878bfC0;
 }
 
+/* Theme: Night Mode */
+
+html.night-mode,
+.night-mode body {
+  background: #1E1E1E;
+  color: #C0C0C0;
+}
+
+.night-mode #toolbar button:not(#plugin-settings-btn) {
+  background: #1E1E1E;
+  color: #C0C0C0;
+  border: 1px solid #777;
+  border-radius: 3px;
+  padding: 3px 7px;
+}
+
+.night-mode #status {
+  opacity: 0.2;
+}
+
+/* Theme Selector Plugin Settings */
+.plugin-setting.theme-selector a {
+  color: #EBEBEB;
+}
+.plugin-setting.theme-selector a.active {
+  text-decoration: none;
+}
+
 /* Plugin Settings Modal */
 .modal-overlay {
   position: fixed;
