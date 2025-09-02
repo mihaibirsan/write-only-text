@@ -223,5 +223,24 @@ const CORE_PLUGINS = {
         );
       }
     }
+  },
+
+  themeSelector: {
+    slots: {
+      settings: function ThemeSelectorSettings() {
+        const query = new URLSearchParams(window.location.search);
+        const currentTheme = query.get('theme') || 'default';
+        query.delete('theme');
+        const baseQuery = query.toString();
+        return (
+          <div className="plugin-setting theme-selector">
+            <strong>Theme</strong>{' '}
+            <a className={currentTheme === 'default' ? 'active' : ''} href={`?${baseQuery}`}>Default</a>{' '}
+            <a className={currentTheme === 'mauve' ? 'active' : ''} href={`?${baseQuery}&theme=mauve`}>Mauve</a>{' '}
+            <a className={currentTheme === 'night-mode' ? 'active' : ''} href={`?${baseQuery}&theme=night-mode`}>Night Mode</a>
+          </div>
+        );
+      }
+    }
   }
 };
