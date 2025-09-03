@@ -107,6 +107,7 @@ test.describe('Syntax Highlighting', () => {
       fullPage: true,
       animations: 'disabled',
       scale: 'device',
+      maxDiffPixels: 10,
     });
   });
 

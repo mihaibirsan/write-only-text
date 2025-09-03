@@ -104,6 +104,7 @@ button:not(#plugin-settings-btn) {
   border: 1px solid #777;
   border-radius: 3px;
   padding: 2px 7px;
+  font: 400 12px 'Fira Code', monospace;
 }
 
 /* Theme: Mauve */
