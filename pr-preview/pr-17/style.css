@@ -48,9 +48,8 @@ textarea#cursor {
   justify-content: flex-end;
   box-sizing: border-box;
   max-width: 40em;
-  height: 20vh;
   margin: 0 auto;
-  padding: 1em 0;
+  padding: 0 0 10px;
   background: linear-gradient(
 0deg, #2F3437, rgba(0x2F, 0x34, 0x37, .8), transparent);
 }
