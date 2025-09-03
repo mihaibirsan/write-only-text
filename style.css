@@ -4,7 +4,7 @@ html, body {
   margin: 0; height: 100vh;
   background: #2F3437;
   color: #EBEBEB;
-  font: 14px Consolas, monospace;
+  font: 300 14px 'Fira Code', monospace;
 }
 
 #enclosure, #time, #wordcount {
@@ -22,6 +22,7 @@ html, body {
 }
 
 #text {
+  font-weight: 400;
   min-height: 60vh;
   box-sizing: border-box;
   padding: .5em;
@@ -136,6 +137,9 @@ html.night-mode,
 .plugin-setting.theme-selector a.active {
   text-decoration: none;
 }
+.plugin-setting.theme-selector strong {
+  font-weight: 500;
+}
 
 /* Plugin Settings Modal */
 .modal-overlay {
@@ -218,7 +222,7 @@ html.night-mode,
   display: block;
   margin-bottom: 0.5rem;
   color: #EBEBEB;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .plugin-description {
@@ -289,7 +293,7 @@ html.night-mode,
 
 .hljs-section {
   color: white;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .hljs-bullet {
@@ -322,7 +326,7 @@ html.night-mode,
 }
 
 .hljs-strong {
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .hljs-tag {
