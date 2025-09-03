@@ -105,9 +105,7 @@ test.describe('Syntax Highlighting', () => {
     // Take screenshot
     await expect(page).toHaveScreenshot('syntax-highlighting.png', {
       fullPage: true,
-      animations: 'disabled',
-      scale: 'device',
-      maxDiffPixels: 10,
+      animations: 'disabled'
     });
   });
 
