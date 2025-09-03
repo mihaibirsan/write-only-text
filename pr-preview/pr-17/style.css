@@ -98,6 +98,14 @@ textarea#cursor {
   background-color: red;
 }
 
+button:not(#plugin-settings-btn) {
+  background: #EFEFEF;
+  color: #000;
+  border: 1px solid #777;
+  border-radius: 3px;
+  padding: 2px 7px;
+}
+
 /* Theme: Mauve */
 html.mauve,
 .mauve body {
@@ -123,7 +131,7 @@ html.night-mode,
   color: #C0C0C0;
   border: 1px solid #777;
   border-radius: 3px;
-  padding: 3px 7px;
+  padding: 2px 7px;
 }
 
 .night-mode #status {
