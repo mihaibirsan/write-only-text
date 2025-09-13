@@ -39,12 +39,11 @@ test.describe('Pomodoro Timer', () => {
     await page.goto('/');
     await page.keyboard.press('Control+,');
     await page.locator(POMODORO_TIMER_SETTINGS_LABEL).check();
-    // TODO: There is a known bug with this dropdown
-    // await page.locator('select').selectOption({ label: '15 minutes' });
+    await page.locator('select').selectOption({ label: '15 minutes' });
     await page.click('.modal-close');
     // Start session
     await page.locator('#cursor').pressSequentially('Hello world');
-    await page.clock.fastForward('25:01');
+    await page.clock.fastForward('15:01');
     await expect(page.locator('#pomodoro-timer')).toContainText('Session Complete');
     // Reset document
     page.once('dialog', async dialog => {
@@ -54,7 +53,7 @@ test.describe('Pomodoro Timer', () => {
     });
     await page.click('#clear');
     await page.locator('#cursor').pressSequentially('New session');
-    await expect(page.locator('#pomodoro-timer')).toContainText('⏱️ 24:');
+    await expect(page.locator('#pomodoro-timer')).toContainText('⏱️ 14:');
     await expect(page.locator('#text')).toContainText('New session');
   });
 });

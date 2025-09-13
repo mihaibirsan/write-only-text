@@ -18,7 +18,6 @@ function App() {
   // Initialize plugin configuration
   const [pluginConfig, setPluginConfig] = useState(() => createPluginConfig());
   const [showPluginSettings, setShowPluginSettings] = useState(false);
-  const prevPluginConfigRef = useRef({});
 
   // Handle theme from URL params
   useEffect(() => {
@@ -28,32 +27,6 @@ function App() {
       document.documentElement.className = theme;
     }
   }, []);
-
-  // Initialize and cleanup plugins when config changes
-  useMemo(() => {
-    // Only cleanup plugins that were enabled but are now disabled
-    Object.entries(CORE_PLUGINS).forEach(([key, plugin]) => {
-      const wasEnabled = prevPluginConfigRef.current[key]?.enabled || false;
-      const isEnabled = pluginConfig[key]?.enabled || false;
-      
-      if (wasEnabled && !isEnabled) {
-        cleanupPlugin(plugin);
-      }
-    });
-    
-    // Only initialize plugins that were disabled but are now enabled
-    Object.entries(pluginConfig).forEach(([key, config]) => {
-      const wasEnabled = prevPluginConfigRef.current[key]?.enabled || false;
-      const isEnabled = config.enabled || false;
-      
-      if ((!wasEnabled && isEnabled && CORE_PLUGINS[key])) {
-        initializePlugin(CORE_PLUGINS[key], config, { doc });
-      }
-    });
-    
-    // Update previous config for next comparison
-    prevPluginConfigRef.current = pluginConfig;
-  }, [pluginConfig]);
 
   // Sync plugin config to localStorage
   useEffect(() => {
@@ -149,6 +122,8 @@ function App() {
   return (
     <PluginContext.Provider value={pluginContextValue}>
       <div>
+        <PluginManager doc={doc} />
+        
         <div id="enclosure">
           <TextRenderer doc={doc} />
           <TextInput doc={doc} onDocChange={handleDocChange} />

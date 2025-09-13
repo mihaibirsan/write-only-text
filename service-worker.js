@@ -6,6 +6,7 @@ const urlsToCache = [
   './style.css',
   './utils.js',
   './plugins/pluginSystem.js',
+  './plugins/corePlugins_components.js',
   './plugins/corePlugins.js',
   './components.js',
   './app.js',
