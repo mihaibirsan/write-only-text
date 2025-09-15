@@ -199,3 +199,25 @@ test.describe('Syntax Highlighting', () => {
     await expect(textRenderer.locator('.hljs-section')).toHaveCount(1);
   });
 });
+
+test.describe('Syntax Highlighting Initial Render', () => {
+  test.use({ storageState: { origins: [ {
+    origin: 'http://localhost:3000/',
+    localStorage: [
+      { name: 'text', value: TEST_MARKDOWN_CONTENT },
+      { name: 'startTime', value: "2025-09-15T10:41:03+03:00" },
+      { name: 'endTime', value: "2025-09-15T10:56:14+03:00" },
+      { name: 'pluginConfig', value: JSON.stringify({syntaxHighlighting:{enabled:true}}) },
+    ],
+  } ] } });
+
+  test('should render markdown with proper syntax highlighting at start', async ({ page }) => {
+    await page.goto('/');
+    const textRenderer = page.locator('#text');
+
+    // Verify initial highlighting
+    await expect(textRenderer.locator('.hljs-section')).toHaveCount(1);
+    await expect(textRenderer.locator('.hljs-strong')).toHaveCount(2);
+    await expect(textRenderer.locator('.hljs-emphasis')).toHaveCount(2);
+  });
+});
