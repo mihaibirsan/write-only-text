@@ -1,19 +1,9 @@
-const { useContext, useEffect, useRef, useState } = React;
+const { useCallback, useContext, useEffect, useRef, useState } = React;
 
 // Syntax Highlighting Plugin Component
 function SyntaxHighlightingPlugin({ config, doc }) {
-  useEffect(() => {
-    // Only install handler when the plugin is enabled
-    if (!config.enabled) return;
-
-    // Check if highlight.js is available
-    if (typeof hljs === 'undefined') {
-      console.warn('highlight.js not loaded, falling back to plain text');
-      return;
-    }
-
+  const renderHandler = useCallback((data) => {
     const applySyntaxHighlighting = (text) => {
-
       try {
         // Use highlight.js to highlight the entire text as markdown
         const highlighted = hljs.highlight(text, { language: 'markdown' });
@@ -24,19 +14,27 @@ function SyntaxHighlightingPlugin({ config, doc }) {
       }
     };
 
-    const renderHandler = (data) => {
-      return {
-        content: applySyntaxHighlighting(data.content),
-        isHTML: true
-      };
+    return {
+      content: applySyntaxHighlighting(data.content),
+      isHTML: true
     };
+  }, []);
 
-    PluginEventEmitter.on('render:text', renderHandler);
+  /**
+   * NOTE: This is a bit of a hack to ensure the event listener is registered
+   * before the first render. Ideally, the render pipeline would use reactivity
+   * instead of events, such that when adding a new plugin, it would re-render.
+   * See: Plugin Architecture Render Pipeline #19
+   */
+  useMemo(() => {
+    if (config.enabled) {
+      PluginEventEmitter.on('render:text', renderHandler);
+    }
+  }, [config]);
 
-    return () => {
-      PluginEventEmitter.off('render:text', renderHandler);
-    };
-  }, [config.enabled]);
+  useEffect(() => {
+    return () => PluginEventEmitter.off('render:text', renderHandler);
+  }, [config]);
 
   return null; // This plugin doesn't render any UI, only handles events
 }
