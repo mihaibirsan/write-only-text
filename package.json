@@ -9,9 +9,15 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug"
   },
+  "simple-git-hooks": {
+    "pre-commit": "npx pretty-quick --staged"
+  },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
     "browser-sync": "^3.0.4",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "prettier": "^3.6.2",
+    "pretty-quick": "^4.2.2",
+    "simple-git-hooks": "^2.13.1"
   }
 }
