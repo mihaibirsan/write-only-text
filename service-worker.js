@@ -15,21 +15,20 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js',
 ];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(urlsToCache);
+    }),
   );
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
-      .then(networkResponse => {
+      .then((networkResponse) => {
         // Cache only known paths
-        caches.open(CACHE_NAME).then(cache => {
+        caches.open(CACHE_NAME).then((cache) => {
           if (urlsToCache.includes(new URL(event.request.url).pathname)) {
             cache.put(event.request, networkResponse);
           }
@@ -39,6 +38,6 @@ self.addEventListener('fetch', event => {
       })
       .catch(() => {
         return caches.match(event.request, { ignoreSearch: true });
-      })
+      }),
   );
 });

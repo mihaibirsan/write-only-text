@@ -5,16 +5,15 @@ function TextRenderer({ doc }) {
   // Apply text rendering plugins via events
   const renderedContent = PluginEventEmitter.emit('render:text', {
     content: doc.totalString,
-    isHTML: false
+    isHTML: false,
   });
-  
+
   return (
-    <div 
+    <div
       id="text"
-      {...(renderedContent.isHTML 
+      {...(renderedContent.isHTML
         ? { dangerouslySetInnerHTML: { __html: renderedContent.content } }
-        : { children: renderedContent.content }
-      )}
+        : { children: renderedContent.content })}
     />
   );
 }
@@ -26,17 +25,17 @@ function TextInput({ doc, onDocChange }) {
   const handleInput = (event) => {
     const newDoc = {
       ...doc,
-      totalString: event.target.value
+      totalString: event.target.value,
     };
 
     // Set start time if this is the first input
     if (doc.startTime === null) {
       newDoc.startTime = currentTimeString();
     }
-    
+
     // Always update end time
     newDoc.endTime = currentTimeString();
-    
+
     // Validate input with plugins
     const validation = PluginEventEmitter.emit('validate:input', {
       allowed: true,
@@ -51,7 +50,7 @@ function TextInput({ doc, onDocChange }) {
       }
       return;
     }
-    
+
     // TODO: Is there a better way to model this as reactive?
     onDocChange(newDoc);
   };
@@ -59,8 +58,8 @@ function TextInput({ doc, onDocChange }) {
   const handleSelectionChange = () => {
     if (textareaRef.current) {
       textareaRef.current.setSelectionRange(
-        textareaRef.current.value.length, 
-        textareaRef.current.value.length
+        textareaRef.current.value.length,
+        textareaRef.current.value.length,
       );
     }
   };
@@ -69,10 +68,16 @@ function TextInput({ doc, onDocChange }) {
   useEffect(() => {
     if (textareaRef.current) {
       handleSelectionChange(); // Place cursor at end initially
-      textareaRef.current.addEventListener('selectionchange', handleSelectionChange);
+      textareaRef.current.addEventListener(
+        'selectionchange',
+        handleSelectionChange,
+      );
       return () => {
         if (textareaRef.current) {
-          textareaRef.current.removeEventListener('selectionchange', handleSelectionChange);
+          textareaRef.current.removeEventListener(
+            'selectionchange',
+            handleSelectionChange,
+          );
         }
       };
     }
@@ -91,19 +96,22 @@ function TextInput({ doc, onDocChange }) {
 
 // WordCount Component
 function WordCount({ doc }) {
-  return (
-    <span id="wordcount">• {wordCount(doc.totalString)} words</span>
-  );
+  return <span id="wordcount">• {wordCount(doc.totalString)} words</span>;
 }
 
 // TimeDisplay Component
 function TimeDisplay({ doc }) {
   if (doc.startTime === null) {
-    return <span id="time">{' '}<span>Just start typing.</span>{' '}</span>;
+    return (
+      <span id="time">
+        {' '}
+        <span>Just start typing.</span>{' '}
+      </span>
+    );
   }
 
   return (
-    <span 
+    <span
       id="time"
       // TODO: Verbose composition should be updated
       dangerouslySetInnerHTML={{
@@ -113,7 +121,7 @@ function TimeDisplay({ doc }) {
           '<span>-></span>',
           zettelIDPretty(timeStringToZettelID(doc.endTime)),
           ' ',
-        ].join('')
+        ].join(''),
       }}
     />
   );
@@ -156,13 +164,18 @@ function ActionButtons({ doc, onClear }) {
 
   return (
     <>
-      <button id="share-as-file" onClick={handleShareAsFile}>Share as file</button>
-      {' '}
-      <button id="share" onClick={handleShare}>Share</button>
-      {' '}
-      <button id="copy" onClick={handleCopy}>Copy</button>
-      {' '}
-      <button id="clear" onClick={handleClear}>Clear</button>
+      <button id="share-as-file" onClick={handleShareAsFile}>
+        Share as file
+      </button>{' '}
+      <button id="share" onClick={handleShare}>
+        Share
+      </button>{' '}
+      <button id="copy" onClick={handleCopy}>
+        Copy
+      </button>{' '}
+      <button id="clear" onClick={handleClear}>
+        Clear
+      </button>
     </>
   );
 }
@@ -173,10 +186,9 @@ function OfflineReady() {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready
-        .then(() => {
-          setIsReady(true);
-        })
+      navigator.serviceWorker.ready.then(() => {
+        setIsReady(true);
+      });
     }
   }, []);
 
@@ -193,11 +205,11 @@ function VersionStatus() {
 
   useEffect(() => {
     fetch('package.json')
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setVersion(data.version);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Failed to fetch version:', err);
       });
   }, []);
@@ -212,17 +224,13 @@ function VersionStatus() {
 // Plugin Settings Component
 function PluginSettings({ isVisible, onClose }) {
   if (!isVisible) return null;
-  
+
   return (
     <div id="plugin-settings" className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
           <h3>Plugin Settings</h3>
-          <button 
-            className="modal-close"
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             ×
           </button>
         </div>

@@ -1,7 +1,15 @@
 // Utility functions from original script
-const currentTimeString = () => luxon.DateTime.now().set({ milliseconds: 0 }).toISO({ suppressMilliseconds: true });
-const timeStringToZettelID = (timeString) => timeString && timeString.replaceAll(/[- :T]+/g, '');
-const zettelIDPretty = (zettelID) => zettelID.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(.+)/, '<span>$1</span><span>$2</span><span>$3</span><span>$4$5</span><span>$6</span>');
+const currentTimeString = () =>
+  luxon.DateTime.now()
+    .set({ milliseconds: 0 })
+    .toISO({ suppressMilliseconds: true });
+const timeStringToZettelID = (timeString) =>
+  timeString && timeString.replaceAll(/[- :T]+/g, '');
+const zettelIDPretty = (zettelID) =>
+  zettelID.replace(
+    /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(.+)/,
+    '<span>$1</span><span>$2</span><span>$3</span><span>$4$5</span><span>$6</span>',
+  );
 const wordCount = (text) => (text.match(/\p{L}+/gu) || []).length;
 
 // Utility functions for sharing and copying
@@ -20,14 +28,14 @@ function share(text) {
 }
 
 function copy(text) {
-  const fake = document.body.appendChild(document.createElement("textarea"));
-  fake.style.position = "absolute";
-  fake.style.left = "-9999px";
-  fake.setAttribute("readonly", "");
-  fake.value = "" + text;
+  const fake = document.body.appendChild(document.createElement('textarea'));
+  fake.style.position = 'absolute';
+  fake.style.left = '-9999px';
+  fake.setAttribute('readonly', '');
+  fake.value = '' + text;
   fake.select();
   try {
-    return document.execCommand("copy");
+    return document.execCommand('copy');
   } catch (err) {
     return false;
   } finally {

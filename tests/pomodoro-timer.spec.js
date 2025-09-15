@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
-const POMODORO_TIMER_SETTINGS_LABEL = 'label:has-text("Pomodoro Timer") input[type="checkbox"]';
+const POMODORO_TIMER_SETTINGS_LABEL =
+  'label:has-text("Pomodoro Timer") input[type="checkbox"]';
 
 test.describe('Pomodoro Timer', () => {
   test('Session start and timer display', async ({ page }) => {
@@ -27,11 +28,15 @@ test.describe('Pomodoro Timer', () => {
     await page.locator('#cursor').pressSequentially('Hello world');
     await expect(page.locator('#pomodoro-timer')).toContainText(' 0:01');
     await page.clock.fastForward('2');
-    await expect(page.locator('#pomodoro-timer')).toContainText('Session Complete');
+    await expect(page.locator('#pomodoro-timer')).toContainText(
+      'Session Complete',
+    );
     // Try to type
     await page.locator('#cursor').pressSequentially('Should not be allowed');
     // Input should be blocked (text not updated)
-    await expect(page.locator('#text')).not.toContainText('Should not be allowed');
+    await expect(page.locator('#text')).not.toContainText(
+      'Should not be allowed',
+    );
   });
 
   test('Session reset', async ({ page }) => {
@@ -44,11 +49,15 @@ test.describe('Pomodoro Timer', () => {
     // Start session
     await page.locator('#cursor').pressSequentially('Hello world');
     await page.clock.fastForward('15:01');
-    await expect(page.locator('#pomodoro-timer')).toContainText('Session Complete');
+    await expect(page.locator('#pomodoro-timer')).toContainText(
+      'Session Complete',
+    );
     // Reset document
-    page.once('dialog', async dialog => {
+    page.once('dialog', async (dialog) => {
       expect(dialog.type()).toBe('confirm');
-      expect(dialog.message()).toContain('Are you sure you want to clear the text?');
+      expect(dialog.message()).toContain(
+        'Are you sure you want to clear the text?',
+      );
       await dialog.accept();
     });
     await page.click('#clear');

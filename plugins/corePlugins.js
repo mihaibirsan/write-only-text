@@ -2,14 +2,15 @@
 const CORE_PLUGINS = {
   syntaxHighlighting: {
     name: 'Syntax Highlighting',
-    description: 'Adds syntax coloring to text using highlight.js markdown syntax',
+    description:
+      'Adds syntax coloring to text using highlight.js markdown syntax',
     defaultConfig: {
       enabled: false,
     },
     component: SyntaxHighlightingPlugin,
     slots: {
-      settings: SyntaxHighlightingSettings
-    }
+      settings: SyntaxHighlightingSettings,
+    },
   },
 
   pomodoroTimer: {
@@ -22,8 +23,8 @@ const CORE_PLUGINS = {
     component: PomodoroTimerPlugin,
     slots: {
       toolbar: PomodoroDisplay,
-      settings: PomodoroSettings
-    }
+      settings: PomodoroSettings,
+    },
   },
 
   themeSelector: {
@@ -36,12 +37,27 @@ const CORE_PLUGINS = {
         return (
           <div className="plugin-setting theme-selector">
             <strong>Theme</strong>{' '}
-            <a className={currentTheme === 'default' ? 'active' : ''} href={`?${baseQuery}`}>Default</a>{' '}
-            <a className={currentTheme === 'mauve' ? 'active' : ''} href={`?${baseQuery}&theme=mauve`}>Mauve</a>{' '}
-            <a className={currentTheme === 'night-mode' ? 'active' : ''} href={`?${baseQuery}&theme=night-mode`}>Night Mode</a>
+            <a
+              className={currentTheme === 'default' ? 'active' : ''}
+              href={`?${baseQuery}`}
+            >
+              Default
+            </a>{' '}
+            <a
+              className={currentTheme === 'mauve' ? 'active' : ''}
+              href={`?${baseQuery}&theme=mauve`}
+            >
+              Mauve
+            </a>{' '}
+            <a
+              className={currentTheme === 'night-mode' ? 'active' : ''}
+              href={`?${baseQuery}&theme=night-mode`}
+            >
+              Night Mode
+            </a>
           </div>
         );
-      }
-    }
+      },
+    },
   },
 };

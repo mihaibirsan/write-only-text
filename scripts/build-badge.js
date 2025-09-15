@@ -15,7 +15,7 @@ fs.readFile(filePath, 'utf8', (err, data) => {
     /<div id="badge".+/,
     prNumber
       ? `<div id="badge"><span class="key">Preview </span><span class="value"><a href="https://github.com/mihaibirsan/write-only-text/pull/${prNumber}">PR #${prNumber}</a></span></div>`
-      : `<div id="badge"><span class="key">Preview </span><span class="value"><a href="https://github.com/mihaibirsan/write-only-text/tree/${githubRefName}">${githubRefName}</a></span></div>`
+      : `<div id="badge"><span class="key">Preview </span><span class="value"><a href="https://github.com/mihaibirsan/write-only-text/tree/${githubRefName}">${githubRefName}</a></span></div>`,
   );
 
   fs.writeFile(filePath, modifiedHTML, 'utf8', (err) => {
