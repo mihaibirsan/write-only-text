@@ -101,6 +101,15 @@ function App() {
   };
 
   const handleClear = () => {
+    // Push history item
+    const uuid = crypto.randomUUID();
+    const historyItem = {
+      uuid,
+      ...doc,
+    };
+    window.localStorage.setItem(uuid, JSON.stringify(historyItem));
+
+    // Actually clear
     const newDoc = {
       totalString: '',
       startTime: null,
