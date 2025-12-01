@@ -1,5 +1,48 @@
 const { useState, useEffect, useMemo, useRef } = React;
 
+// Convenience API for document History
+const HistoryAPI = {
+  getAllItems: () => {
+    const items = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      try {
+        const item = JSON.parse(window.localStorage.getItem(key));
+        if (item && item.uuid) {
+          items.push(item);
+        }
+      } catch (e) {
+        // Ignore non-JSON items
+      }
+    }
+    // Sort by most recent (assuming endTime is a timestamp)
+    items.sort((a, b) => {
+      const timeA = a.endTime ? new Date(a.endTime).getTime() : 0;
+      const timeB = b.endTime ? new Date(b.endTime).getTime() : 0;
+      return timeB - timeA;
+    });
+    return items;
+  },
+  clearItemsOlderThan7Days: () => {
+    const now = Date.now();
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      try {
+        const item = JSON.parse(window.localStorage.getItem(key));
+        if (item && item.uuid && item.endTime) {
+          const itemTime = new Date(item.endTime).getTime();
+          if (now - itemTime > sevenDays) {
+            window.localStorage.removeItem(key);
+          }
+        }
+      } catch (e) {
+        // Ignore non-JSON items
+      }
+    }
+  },
+};
+
 // Main App Component
 function App() {
   // Initialize doc object from localStorage
