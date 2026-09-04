@@ -1,4 +1,5 @@
 node_modules/
+.claude/settings.local.json
 
 # Ignore PR preview deployment artifacts
 pr-preview/*/bare_pr_preview/

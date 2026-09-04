@@ -16,7 +16,9 @@ const PluginEventEmitter = {
 
   off(event, callback) {
     if (this.listeners[event]) {
-      this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+      this.listeners[event] = this.listeners[event].filter(
+        (cb) => cb !== callback,
+      );
     }
   },
 };
@@ -38,7 +40,12 @@ function PluginSlot({ name, children, ...props }) {
       return <Component key={key} {...props} />;
     });
 
-  return <>{children}{pluginComponents}</>;
+  return (
+    <>
+      {children}
+      {pluginComponents}
+    </>
+  );
 }
 
 // Plugin Manager Component - renders all enabled plugin components
@@ -51,13 +58,7 @@ function PluginManager({ doc }) {
       const PluginComponent = plugin.component;
       const pluginConfig = config[key];
 
-      return (
-        <PluginComponent
-          key={key}
-          config={pluginConfig}
-          doc={doc}
-        />
-      );
+      return <PluginComponent key={key} config={pluginConfig} doc={doc} />;
     });
 
   return <>{enabledPlugins}</>;

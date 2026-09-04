@@ -16,7 +16,7 @@ function SyntaxHighlightingPlugin({ config, doc }) {
 
     return {
       content: applySyntaxHighlighting(data.content),
-      isHTML: true
+      isHTML: true,
     };
   }, []);
 
@@ -50,12 +50,14 @@ function SyntaxHighlightingSettings() {
         <input
           type="checkbox"
           checked={pluginConfig.enabled || false}
-          onChange={(e) => updateConfig('syntaxHighlighting', {
-            ...pluginConfig,
-            enabled: e.target.checked
-          })}
-        />
-        {' '}Syntax Highlighting
+          onChange={(e) =>
+            updateConfig('syntaxHighlighting', {
+              ...pluginConfig,
+              enabled: e.target.checked,
+            })
+          }
+        />{' '}
+        Syntax Highlighting
       </label>
       <p className="plugin-description">
         Adds markdown syntax highlighting using highlight.js
@@ -71,7 +73,9 @@ function PomodoroTimerPlugin({ config, doc }) {
   const [timeRemaining, setTimeRemaining] = useState(0);
 
   useEffect(() => {
-    startTimeRef.current = doc.startTime ? new Date(doc.startTime).getTime() : null;
+    startTimeRef.current = doc.startTime
+      ? new Date(doc.startTime).getTime()
+      : null;
   }, [doc.startTime]);
 
   useEffect(() => {
@@ -169,10 +173,7 @@ function PomodoroDisplay() {
   const isExpired = timeRemaining === 0;
 
   return (
-    <span
-      id="pomodoro-timer"
-      className={isExpired ? 'expired' : 'active'}
-    >
+    <span id="pomodoro-timer" className={isExpired ? 'expired' : 'active'}>
       {isExpired ? '⏰ Session Complete' : `⏱️ ${formatTime(timeRemaining)}`}
     </span>
   );
@@ -190,13 +191,15 @@ function PomodoroSettings() {
         <input
           type="checkbox"
           checked={pluginConfig.enabled || false}
-          onChange={(e) => updateConfig('pomodoroTimer', {
-            ...defaultConfig,
-            ...pluginConfig,
-            enabled: e.target.checked
-          })}
-        />
-        {' '}Pomodoro Timer
+          onChange={(e) =>
+            updateConfig('pomodoroTimer', {
+              ...defaultConfig,
+              ...pluginConfig,
+              enabled: e.target.checked,
+            })
+          }
+        />{' '}
+        Pomodoro Timer
       </label>
       <p className="plugin-description">
         Limits writing sessions to focused time periods
@@ -207,12 +210,14 @@ function PomodoroSettings() {
             Duration:{' '}
             <select
               value={pluginConfig.duration || 25 * 60 * 1000}
-              onInput={(e) => updateConfig('pomodoroTimer', {
-                ...pluginConfig,
-                duration: parseInt(e.target.value)
-              })}
+              onInput={(e) =>
+                updateConfig('pomodoroTimer', {
+                  ...pluginConfig,
+                  duration: parseInt(e.target.value),
+                })
+              }
             >
-              <option value={ 5 * 60 * 1000}> 5 minutes</option>
+              <option value={5 * 60 * 1000}> 5 minutes</option>
               <option value={10 * 60 * 1000}>10 minutes</option>
               <option value={15 * 60 * 1000}>15 minutes</option>
               <option value={25 * 60 * 1000}>25 minutes</option>

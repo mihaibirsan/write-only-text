@@ -7,7 +7,7 @@ function App() {
     const savedText = window.localStorage.getItem('text') || '';
     const savedStartTime = window.localStorage.getItem('startTime') || null;
     const savedEndTime = window.localStorage.getItem('endTime') || null;
-    
+
     return {
       totalString: savedText,
       startTime: savedStartTime,
@@ -58,7 +58,11 @@ function App() {
       if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
         const copyBtn = document.getElementById('copy');
         if (copyBtn) copyBtn.click();
-      } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'x') {
+      } else if (
+        (event.ctrlKey || event.metaKey) &&
+        event.shiftKey &&
+        event.key === 'x'
+      ) {
         const clearBtn = document.getElementById('clear');
         if (clearBtn) clearBtn.click();
       } else if ((event.ctrlKey || event.metaKey) && event.key === ',') {
@@ -112,9 +116,9 @@ function App() {
   const pluginContextValue = {
     config: pluginConfig,
     updateConfig: (pluginKey, newConfig) => {
-      setPluginConfig(prev => ({
+      setPluginConfig((prev) => ({
         ...prev,
-        [pluginKey]: { ...prev[pluginKey], ...newConfig }
+        [pluginKey]: { ...prev[pluginKey], ...newConfig },
       }));
     },
   };
@@ -123,7 +127,7 @@ function App() {
     <PluginContext.Provider value={pluginContextValue}>
       <div>
         <PluginManager doc={doc} />
-        
+
         <div id="enclosure">
           <TextRenderer doc={doc} />
           <TextInput doc={doc} onDocChange={handleDocChange} />
@@ -134,9 +138,8 @@ function App() {
             <ActionButtons doc={doc} onClear={handleClear} />
             <PluginSlot name="toolbar" doc={doc} />
             <TimeDisplay doc={doc} />
-            <WordCount doc={doc} />
-            {' '}
-            <button 
+            <WordCount doc={doc} />{' '}
+            <button
               id="plugin-settings-btn"
               onClick={() => setShowPluginSettings(true)}
               title="Plugin Settings (Ctrl+,)"
@@ -145,13 +148,12 @@ function App() {
             </button>
           </div>
         </div>
-        
+
         <div id="status">
-          <OfflineReady />{' '}
-          <VersionStatus />
+          <OfflineReady /> <VersionStatus />
         </div>
 
-        <PluginSettings 
+        <PluginSettings
           isVisible={showPluginSettings}
           onClose={() => setShowPluginSettings(false)}
         />
